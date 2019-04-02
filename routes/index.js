@@ -6,4 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.post('/api/account/signup', function(req, res, next) {
+  res.send(req.body)
+});
+
 module.exports = router;
