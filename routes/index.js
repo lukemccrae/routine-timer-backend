@@ -21,7 +21,6 @@ const Group = require('../models/Group');
 //   });
 
 router.post('/api/account/signin', (req, res, next) => {
-  console.log('sign in');
   const {
     body
   } = req;
@@ -150,8 +149,6 @@ router.post('/group', (req, res, next) => {
     hash
   } = body;
 
-  console.log(body);
-
   if (!name || timers.length == 0) {
     res.send({
       succes: false,
@@ -170,7 +167,6 @@ router.post('/group', (req, res, next) => {
       newGroup.user = sessions[0].userId
       newGroup.hash = hash;
       newGroup.save((err, group) => {
-        console.log(group, 'gotcha');
         if (err) {
           console.log(err);
         } else {
@@ -241,12 +237,10 @@ router.post('/timer', (req, res, next) => {
 
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
-  console.log(hash, 'what');
 
   Group.find({
     hash: hash
   }, (err, group) => {
-    console.log(group);
     res.render('index', {
       title: group[0].name,
       hash: group[0].hash
@@ -274,7 +268,6 @@ router.get('/timer', (req, res, next) => {
       Group.find({
         user: sessions[0].userId
       }, (err, groups) => {
-        console.log(sessions[0], '');
         res.send({
           success: true,
           message: 'resources found',
@@ -317,7 +310,6 @@ router.get('/group/display', (req, res, next) => {
   const {
     hash
   } = query;
-  console.log(req);
 
   Group.find({
     hash: hash
@@ -445,7 +437,6 @@ router.delete('/group', function(req, res) {
         message: 'error: Invalid'
       })
     } else {
-      console.log(groupId);
       Group.deleteOne({
         _id: groupId
       }, function(err) {
