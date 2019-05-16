@@ -11,7 +11,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://127.0.0.1/login_demo';
+var mongoDB = 'mongodb://heroku_1wl6g6bw:Movement11!!@ds119565.mlab.com:19565/heroku_1wl6g6bw';
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 
 //Get the default connection
