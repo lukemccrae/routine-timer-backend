@@ -43,8 +43,6 @@ mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 
 // connectWithRetry()
 
-mongoose.connect(mongodb, { useNewUrlParser: true });
-
 //Get the default connection
 var db = mongoose.connection;
 
