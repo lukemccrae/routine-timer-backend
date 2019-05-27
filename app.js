@@ -17,14 +17,14 @@ var env = process.env.NODE_ENV || 'dev';
 var mongodb;
 
 if(env == 'dev') {
+  console.log(env, console.log(process.env.NODE_ENV));
   mongodb = process.env.LOCAL_HOST
 } else {
   mongodb = process.env.API_HOST
 }
 
+var mongodb = process.env.API_HOST;
 console.log(mongodb);
-
-// var mongodb = process.env.API_HOST;
 
 const options = {
     autoIndex: false, // Don't build indexes
