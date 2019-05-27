@@ -12,31 +12,31 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 //Set up default mongoose connection
-var env = process.env.NODE_ENV || 'dev';
+var env = process.env.MONGODB_URI || 'dev';
 
-var mongodb;
+const MONGODB_URI;
 
 if(env == 'dev') {
   console.log(env, console.log(process.env.NODE_ENV));
-  mongodb = process.env.LOCAL_HOST
+  MONGODB_URI = process.env.LOCAL_HOST
 } else {
-  mongodb = process.env.API_HOST
+  MONGODB_URI = process.env.API_HOST
 }
 
-var mongodb = process.env.API_HOST;
+// var mongodb = process.env.API_HOST;
 console.log(mongodb, 'mongodb log');
 
-mongoose.connect(mongodb, {useNewUrlParser: true});
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 
-const options = {
-    autoIndex: false, // Don't build indexes
-    reconnectTries: 30, // Retry up to 30 times
-    reconnectInterval: 500, // Reconnect every 500ms
-    poolSize: 10, // Maintain up to 10 socket connections
-    // If not connected, return errors immediately rather than waiting for reconnect
-    bufferMaxEntries: 0,
-    useNewUrlParser: true
-  }
+// const options = {
+//     autoIndex: false, // Don't build indexes
+//     reconnectTries: 30, // Retry up to 30 times
+//     reconnectInterval: 500, // Reconnect every 500ms
+//     poolSize: 10, // Maintain up to 10 socket connections
+//     // If not connected, return errors immediately rather than waiting for reconnect
+//     bufferMaxEntries: 0,
+//     useNewUrlParser: true
+//   }
 
 // const connectWithRetry = () => {
 //   console.log('MongoDB connection with retry')
