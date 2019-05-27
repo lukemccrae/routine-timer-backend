@@ -14,14 +14,7 @@ var users = require('./routes/users');
 //Set up default mongoose connection
 var env = process.env.MONGODB_URI || 'dev';
 
-const MONGODB_URI;
-
-if(env == 'dev') {
-  console.log(env, console.log(process.env.NODE_ENV));
-  MONGODB_URI = process.env.LOCAL_HOST
-} else {
-  MONGODB_URI = process.env.API_HOST
-}
+const MONGODB_URI = process.env.MONGODB_URI || process.env.LOCAL_HOST;
 
 // var mongodb = process.env.API_HOST;
 console.log(MONGODB_URI, 'mongodb log');
