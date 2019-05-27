@@ -12,7 +12,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 //Set up default mongoose connection
-var env = process.env.MONGODB_URI || 'dev';
+// var env = process.env.MONGODB_URI || 'dev';
 
 const MONGODB_URI = process.env.MONGODB_URI || process.env.LOCAL_HOST;
 
