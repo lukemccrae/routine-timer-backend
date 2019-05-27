@@ -34,19 +34,19 @@ const options = {
     useNewUrlParser: true
   }
 
-const connectWithRetry = () => {
-  console.log('MongoDB connection with retry')
-  mongoose.connect(process.env.API_HOST, options).then(()=>{
-    console.log('MongoDB is connected')
-  }).catch(err=>{
-    console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
-    setTimeout(connectWithRetry, 5000)
-  })
-}
+// const connectWithRetry = () => {
+//   console.log('MongoDB connection with retry')
+//   mongoose.connect(mongodb, options).then(()=>{
+//     console.log('MongoDB is connected')
+//   }).catch(err=>{
+//     console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
+//     setTimeout(connectWithRetry, 5000)
+//   })
+// }
 
-connectWithRetry()
+// connectWithRetry()
 
-// mongoose.connect(mongodb, );
+mongoose.connect(mongodb, { useNewUrlParser: true });
 
 //Get the default connection
 var db = mongoose.connection;
