@@ -45,7 +45,7 @@ const connectWithRetry = () => {
 
 connectWithRetry()
 
-mongoose.connect(mongodb);
+mongoose.connect(mongodb, { useNewUrlParser: true });
 
 //Get the default connection
 var db = mongoose.connection;
