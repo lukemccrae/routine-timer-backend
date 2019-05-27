@@ -24,7 +24,7 @@ if(env == 'dev') {
 }
 
 // var mongodb = process.env.API_HOST;
-console.log(mongodb, 'mongodb log');
+console.log(MONGODB_URI, 'mongodb log');
 
 mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
 
