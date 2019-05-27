@@ -6,13 +6,46 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dotenv = require('dotenv/config');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://heroku_1wl6g6bw:eeee4444@ds119565.mlab.com:19565/heroku_1wl6g6bw';
-mongoose.connect(mongoDB, { useNewUrlParser: true });
+var env = process.env.NODE_ENV || 'dev';
+
+var mongodb;
+
+if(env == 'dev') {
+  mongodb = process.env.LOCAL_HOST
+} else {
+  mongodb = process.env.API_HOST
+}
+
+// var mongodb = process.env.API_HOST;
+
+const options = {
+    autoIndex: false, // Don't build indexes
+    reconnectTries: 30, // Retry up to 30 times
+    reconnectInterval: 500, // Reconnect every 500ms
+    poolSize: 10, // Maintain up to 10 socket connections
+    // If not connected, return errors immediately rather than waiting for reconnect
+    bufferMaxEntries: 0
+  }
+
+const connectWithRetry = () => {
+  console.log('MongoDB connection with retry')
+  mongoose.connect(process.env.API_HOST, options).then(()=>{
+    console.log('MongoDB is connected')
+  }).catch(err=>{
+    console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
+    setTimeout(connectWithRetry, 5000)
+  })
+}
+
+connectWithRetry()
+
+mongoose.connect(mongodb);
 
 //Get the default connection
 var db = mongoose.connection;

@@ -20,6 +20,37 @@ const Group = require('../models/Group');
 //       .catch((err) => next(err));
 //   });
 
+router.post('/sanitycheck', (req, res, next) => {
+  const sanityUser = new User();
+  let sanityUserInfo = {
+    email: "h@h.com",
+    firstName: "h",
+    lastName: "h",
+    password: "eeee"
+  }
+
+
+  sanityUser.email = sanityUserInfo.email;
+  sanityUser.firstName = sanityUserInfo.firstName;
+  sanityUser.lastName = sanityUserInfo.lastName;
+  sanityUser.password = sanityUser.generateHash(sanityUserInfo.password);
+
+  sanityUser.save((err, user) => {
+    console.log(user);
+    if (err) {
+      res.send({
+        success: false,
+        message: 'Error: server error'
+      })
+    }
+    res.send({
+      success: true,
+      message: 'Signed up'
+    })
+  })
+
+})
+
 router.post('/api/account/signin', (req, res, next) => {
   const {
     body
@@ -393,8 +424,9 @@ router.post('/api/account/signup', (req, res, next) => {
       newUser.email = email;
       newUser.firstName = firstName;
       newUser.lastName = lastName;
-      newUser.password = newUser.generateHash(password);
+      newUser.password = newUser.generateHash(password)
       newUser.save((err, user) => {
+        console.log(user);
         if (err) {
           res.send({
             success: false,
