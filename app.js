@@ -24,7 +24,7 @@ if(env == 'dev') {
 }
 
 var mongodb = process.env.API_HOST;
-console.log(mongodb);
+console.log(mongodb, 'mongodb');
 
 const options = {
     autoIndex: false, // Don't build indexes
