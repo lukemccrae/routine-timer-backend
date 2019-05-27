@@ -14,7 +14,7 @@ var users = require('./routes/users');
 //Set up default mongoose connection
 var env = process.env.NODE_ENV || 'dev';
 
-// var mongodb;
+var mongodb;
 
 if(env == 'dev') {
   mongodb = process.env.LOCAL_HOST
@@ -22,9 +22,9 @@ if(env == 'dev') {
   mongodb = process.env.API_HOST
 }
 
-var mongodb = process.env.API_HOST;
-
 console.log(mongodb);
+
+// var mongodb = process.env.API_HOST;
 
 const options = {
     autoIndex: false, // Don't build indexes
