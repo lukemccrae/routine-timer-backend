@@ -442,6 +442,26 @@ router.post('/api/account/signup', (req, res, next) => {
   })
 })
 
+router.patch('/group', function(req, res) {
+  const {query} = req;
+  const {groupId} = query;
+
+  console.log('body', req.body);
+  console.log(groupId);
+
+  Group.findOneAndUpdate({_id: groupId}, {$set:
+    {
+      name: req.body.name,
+      timers: req.body.timers
+    }}, (err, group) => {
+    res.send({
+      success: true,
+      message: 'Group updated',
+      group: group
+    })
+  })
+})
+
 router.delete('/group', function(req, res) {
   const {
     query
@@ -455,6 +475,7 @@ router.delete('/group', function(req, res) {
     _id: token,
     isDeleted: false
   }, (err, sessions) => {
+    console.log(sessions);
     if (err) {
       console.log(err);
       return res.send({
