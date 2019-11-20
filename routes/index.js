@@ -101,8 +101,6 @@ router.post('/api/account/signin', (req, res, next) => {
       })
     }
 
-    console.log(user)
-
     const userSession = new UserSession();
     userSession.userId = user._id;
     userSession.save((err, doc) => {
@@ -113,7 +111,7 @@ router.post('/api/account/signin', (req, res, next) => {
         });
       }
 
-      Timer.find({
+      User.find({
         user: user._id
       }, (err, timers) => {
         Group.find({
@@ -125,8 +123,7 @@ router.post('/api/account/signin', (req, res, next) => {
             token: doc._id,
             timers: timers,
             user: email,
-            groups: groups,
-            log: user.log
+            groups: groups
           })
         })
       })
@@ -302,15 +299,14 @@ router.post('/log', (req, res, next) => {
       User.findOneAndUpdate(
         { _id: sessions[0].userId }, 
         { $push: { log: timer  } },
-       function (error, success) {
+       function (error, logs) {
              if (error) {
                  console.log(error);
              } else {
-                 console.log(success, 'success');
                  res.send({
                   success: true,
                   message: "Timer info received.",
-                  log: success
+                  log: logs
                 })
              }
          });
@@ -345,17 +341,17 @@ router.get('/timer', (req, res, next) => {
     _id: token,
     isDeleted: false
   }, (err, sessions) => {
-    Timer.find({
-      user: sessions[0].userId
-    }, (err, timers) => {
+    User.find({
+      _id: sessions[0].userId
+    }, (err, user) => {
       Group.find({
         user: sessions[0].userId
       }, (err, groups) => {
         res.send({
           success: true,
           message: 'resources found',
-          timers: timers,
-          groups: groups
+          groups: groups,
+          log: user[0].log
         })
       })
     })
