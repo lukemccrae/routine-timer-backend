@@ -9,6 +9,8 @@ const cors = require('cors');
 const dotenv = require('dotenv/config');
 
 var index = require('./routes/index');
+var email = require('./routes/email');
+
 var users = require('./routes/users');
 
 //Set up default mongoose connection
@@ -64,7 +66,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+app.use('/', index, email);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

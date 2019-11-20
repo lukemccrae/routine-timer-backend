@@ -101,6 +101,8 @@ router.post('/api/account/signin', (req, res, next) => {
       })
     }
 
+    console.log(user)
+
     const userSession = new UserSession();
     userSession.userId = user._id;
     userSession.save((err, doc) => {
@@ -123,7 +125,8 @@ router.post('/api/account/signin', (req, res, next) => {
             token: doc._id,
             timers: timers,
             user: email,
-            groups: groups
+            groups: groups,
+            log: user.log
           })
         })
       })
@@ -265,6 +268,55 @@ router.post('/timer', (req, res, next) => {
     })
   }
 })
+
+router.post('/log', (req, res, next) => {
+  const {
+    body
+  } = req;
+
+  const {
+    name,
+    length,
+    token,
+    id,
+    date
+  } = body;
+
+  const timer = {
+    name: name,
+    length: length,
+    id: id,
+    date: date
+  }
+
+  if (!name || !length) {
+    res.send({
+      succes: false,
+      message: "Error: There doesn't seem to be a timer here."
+    })
+  } else {
+    UserSession.find({
+      _id: token,
+      isDeleted: false
+    }, (err, sessions) => {
+      User.findOneAndUpdate(
+        { _id: sessions[0].userId }, 
+        { $push: { log: timer  } },
+       function (error, success) {
+             if (error) {
+                 console.log(error);
+             } else {
+                 console.log(success, 'success');
+                 res.send({
+                  success: true,
+                  message: "Timer info received.",
+                  log: success
+                })
+             }
+         });
+      })
+    }
+  })
 
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
@@ -426,7 +478,6 @@ router.post('/api/account/signup', (req, res, next) => {
       newUser.lastName = lastName;
       newUser.password = newUser.generateHash(password)
       newUser.save((err, user) => {
-        console.log(user);
         if (err) {
           res.send({
             success: false,

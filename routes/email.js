@@ -1,81 +1,54 @@
 var express = require('express');
 var router = express.Router();
 const cors = require('cors');
+var request = require('request');
 const dotenv = require('dotenv/config');
-
-const nodemailer = require("nodemailer");
-
-const EMAIL = process.env.EMAIL;
-const GMAIL_REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
-const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-
+var apigClientFactory = require('aws-api-gateway-client').default;
 router.options('/send', cors())
 
+
+const ACCESS_KEY = process.env.ACCESS_KEY;
+const SECRET_KEY = process.env.SECRET_KEY;
+
+config = {invokeUrl:'https://6kqoehq7fj.execute-api.us-west-2.amazonaws.com/default/emailSender'}
+var apigClient = apigClientFactory.newClient(config);
+
+
 router.post('/send', function(req, res, next) {
-  let data = req.body;
-  const user_name     = EMAIL;
-  const refresh_token = '';
-  const access_token  = '';
-  const client_id     = '';
-  const client_secret = '';
+    console.log(req.body);
+    
+  var pathParams = {
+    //This is where path request params go. 
+    userId: '1234',
+};
+// Template syntax follows url-template https://www.npmjs.com/package/url-template
+var pathTemplate = '/users/{userID}/profile'
+var method = 'POST';
+var additionalParams = {
+    //If there are query parameters or headers that need to be sent with the request you can add them here
+    headers: {
+        param0: '',
+        param1: ''
+    },
+    queryParams: {
+        param0: '',
+        param1: ''
+    }
+};
+var body = {
+    //This is where you define the body of the request
+};
 
-  const email_to = EMAIL;
-
-  const nodemailer = require('nodemailer');
-
-  let transporter = nodemailer
-  .createTransport({
-      service: 'Gmail',
-      auth: {
-          type: 'OAuth2',
-          clientId: CLIENT_ID,
-          clientSecret: CLIENT_SECRET
-      }
-  });
-
-  //create approximate date for token expiration
-  var myDate = new Date();
-  myDate.setHours(myDate.getHours()+24);
-
-  let mailOptions = {
-      from    : EMAIL, // sender address
-      to      : EMAIL, // list of receivers
-      subject : `Personal Site message from ${data.name}`, // Subject line
-      text    : `${data.message}`, // plaintext body
-      html    : `
-                  <div>
-                    ${data.message}
-                    email: ${data.email}
-                  </div>
-                `,
-
-      auth : {
-          user         : user_name,
-          refreshToken : GMAIL_REFRESH_TOKEN,
-          accessToken  : ACCESS_TOKEN,
-          expires      : myDate
-      }
-  };
-
-  transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.log(err);
-          res.send({
-            success: false
-          })
-          return process.exit(1);
-      } else {
-        res.send({
-          success: true
-        })
-      }
-
-      console.log('Message sent: %s', info.messageId);
-      // Preview only available when sending through an Ethereal account
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  });
+apigClient.invokeApi(pathParams, pathTemplate, method, additionalParams, body)
+    .then(function(result){
+      console.log(result, 'success');
+      
+        //This is where you would put a success callback
+    }).catch( function(result){
+      console.log(result, 'fail');
+      
+        //This is where you would put an error callback
+    });
 })
 
 module.exports = router;

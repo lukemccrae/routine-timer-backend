@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
   isDeleted: {
     type: Boolean,
     default: false
+  },
+  log: {
+    type: Array,
+    default: []
   }
 });
 
