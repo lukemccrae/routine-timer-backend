@@ -347,11 +347,27 @@ router.get('/timer', (req, res, next) => {
       Group.find({
         user: sessions[0].userId
       }, (err, groups) => {
+
+        //logs to give to the client. I'm starting with logs for the past week.
+        let currentLog = [];
+
+        //all logs
+        let fullLog = user[0].log;
+
+        let date = Date.now();
+
+        //push logs to currentLog if they are in the past week (604800000 MS)
+        for (let i = fullLog.length - 1; i > 0; i--) {
+          if(date - fullLog[i].date < 604800000) {
+            currentLog.push(fullLog[i])
+          }
+        }
+        
         res.send({
           success: true,
           message: 'resources found',
           groups: groups,
-          log: user[0].log
+          log: currentLog
         })
       })
     })
