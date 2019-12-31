@@ -123,7 +123,8 @@ router.post('/api/account/signin', (req, res, next) => {
             token: doc._id,
             timers: timers,
             user: email,
-            groups: groups
+            groups: groups,
+            id: user._id
           })
         })
       })
