@@ -318,8 +318,6 @@ router.post('/log', (req, res, next) => {
     }
   })
 
-
-
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
 
@@ -386,7 +384,8 @@ router.get('/log', (req, res, next) => {
     query
   } = req;
   const {
-    token
+    token,
+    period
   } = query;
 
   UserSession.find({
@@ -396,12 +395,26 @@ router.get('/log', (req, res, next) => {
     User.find({
       _id: sessions[0].userId
     }, (err, user) => {
-      console.log(user);
-      
+
+        //logs to give to the client. I'm starting with logs for the past week.
+        let currentLog = [];
+
+        //all logs
+        let fullLog = user[0].log;
+
+        let date = Date.now();
+
+        //push logs to currentLog if they are in the past week (604800000 MS)
+        for (let i = fullLog.length - 1; i > 0; i--) {
+          if(date - fullLog[i].date < period && fullLog[i].length > 10) {
+            currentLog.push(fullLog[i])
+          }
+        }
+        
       res.send({
         success: true,
         message: 'resources found',
-        log: user[0].log
+        log: currentLog
       })
     })
   })
