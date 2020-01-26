@@ -124,7 +124,9 @@ router.post('/api/account/signin', (req, res, next) => {
             timers: timers,
             user: email,
             groups: groups,
-            id: user._id
+            id: user._id,
+            log: user.log
+            
           })
         })
       })
@@ -286,6 +288,7 @@ router.post('/log', (req, res, next) => {
     id: id,
     date: date
   }
+  
 
   if (!name || !length) {
     res.send({
@@ -314,6 +317,8 @@ router.post('/log', (req, res, next) => {
       })
     }
   })
+
+
 
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
@@ -370,6 +375,33 @@ router.get('/timer', (req, res, next) => {
           groups: groups,
           log: currentLog
         })
+      })
+    })
+  })
+})
+
+router.get('/log', (req, res, next) => {
+
+  const {
+    query
+  } = req;
+  const {
+    token
+  } = query;
+
+  UserSession.find({
+    _id: token,
+    isDeleted: false
+  }, (err, sessions) => {
+    User.find({
+      _id: sessions[0].userId
+    }, (err, user) => {
+      console.log(user);
+      
+      res.send({
+        success: true,
+        message: 'resources found',
+        log: user[0].log
       })
     })
   })
