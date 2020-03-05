@@ -1,21 +1,45 @@
-var router = require('express').Router();
+var router = require('express').Router(),
+    tj = require("@mapbox/togeojson"),
+    DOMParser = require('xmldom').DOMParser
+    fs = require('fs');
+    xmlparser = require('express-xml-bodyparser');
+    var togpx = require('togpx');
 
-router.post('/convert', (req, res, next) => {
-    console.log(req.body);
+    function reverseArray(points) {
+      let reversedPoints = [];
+      for (let i = 0; i < points.length; i++) {
+        reversedPoints.push(points[i].reverse())
+      }
+      return reversedPoints;
+    };
 
-    var tj = require('togeojson'),
-    fs = require('fs'),
-    // node doesn't have xml parsing or a dom. use xmldom
-    DOMParser = require('xmldom').DOMParser;
+router.post('/togeojson', (req, res, next) => {
+    const gpx = new DOMParser().parseFromString(req.rawBody, "utf8");
+    var converted = tj.gpx(gpx);
+    let points = converted.features[0].geometry.coordinates;
 
-    var kml = new DOMParser().parseFromString(fs.readFileSync(req.body, 'utf8'));
+    //tj.gpx inverts lat/lng points so they need to be reversed
+    converted.features[0].geometry.coordinates = reverseArray(points);
 
-    var converted = tj.kml(kml);
+    res.send({
+      success: true,
+      message: 'GPX converted to GeoJson succesfully.',
+      geoJson: converted
+    })
+  })
 
-    console.log(converted, 'hi');
+  router.post('/togpx', (req, res, next) => {
+    //incoming data is in lat/lng and togpx needs lng/lat
+    let reverseMe = req.body.track.features[0].geometry.coordinates;
+    let reversedArray = reverseArray(reverseMe);
+    //assign reversed coordinates
+    req.body.track.features[0].geometry.coordinates = reversedArray;
     
-
-    var convertedWithStyles = tj.kml(kml, { styles: true });
+    res.send({
+      success: true,
+      message: 'GeoJson converted to GPX succesfully.',
+      gpx: togpx(req.body.track)
+    })
     
   })
   
