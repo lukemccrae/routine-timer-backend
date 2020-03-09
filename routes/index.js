@@ -20,6 +20,24 @@ const Group = require('../models/Group');
 //       .catch((err) => next(err));
 //   });
 
+function getLog(log) {
+    //logs to give to the client. I'm starting with logs for the past week.
+    let currentLog = [];
+
+    //all logs
+    let fullLog = log;
+
+    let date = Date.now();
+
+    //push logs to currentLog if they are in the past week (604800000 MS)
+    for (let i = fullLog.length - 1; i > 0; i--) {
+      if(date - fullLog[i].date < 604800000) {
+        currentLog.push(fullLog[i])
+      }
+    }
+    return currentLog;
+}
+
 router.post('/sanitycheck', (req, res, next) => {
   const sanityUser = new User();
   let sanityUserInfo = {
@@ -114,6 +132,7 @@ router.post('/api/account/signin', (req, res, next) => {
       User.find({
         user: user._id
       }, (err, timers) => {
+        console.log(user._id)
         Group.find({
           user: user._id
         }, (err, groups) => {
@@ -125,7 +144,7 @@ router.post('/api/account/signin', (req, res, next) => {
             user: email,
             groups: groups,
             id: user._id,
-            log: user.log
+            log: getLog(user.log)
             
           })
         })
@@ -351,27 +370,12 @@ router.get('/timer', (req, res, next) => {
       Group.find({
         user: sessions[0].userId
       }, (err, groups) => {
-
-        //logs to give to the client. I'm starting with logs for the past week.
-        let currentLog = [];
-
-        //all logs
-        let fullLog = user[0].log;
-
-        let date = Date.now();
-
-        //push logs to currentLog if they are in the past week (604800000 MS)
-        for (let i = fullLog.length - 1; i > 0; i--) {
-          if(date - fullLog[i].date < 604800000) {
-            currentLog.push(fullLog[i])
-          }
-        }
         
         res.send({
           success: true,
           message: 'resources found',
           groups: groups,
-          log: currentLog
+          log: getLog(user[0].log)
         })
       })
     })
