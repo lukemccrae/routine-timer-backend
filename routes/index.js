@@ -132,10 +132,11 @@ router.post('/api/account/signin', (req, res, next) => {
       User.find({
         user: user._id
       }, (err, timers) => {
-        console.log(user._id)
         Group.find({
           user: user._id
         }, (err, groups) => {
+          console.log(user);
+          
           res.send({
             success: true,
             message: 'valid signin',
@@ -165,9 +166,10 @@ router.get('/api/account/verify', (req, res, next) => {
   } = query;
 
   UserSession.find({
-    userId: token,
+    _id: token,
     isDeleted: false
   }, (err, sessions) => {
+    
     if (err) {
       return res.send({
         success: false,
@@ -181,10 +183,24 @@ router.get('/api/account/verify', (req, res, next) => {
         message: 'error: Invalid'
       })
     } else {
-      return res.send({
-        success: true,
-        message: 'good',
-        sessions: sessions
+      User.findById({
+        _id: sessions[0].userId
+      }, (err, user) => {
+        
+        Group.find({
+          user: sessions[0].userId
+        }, (err, groups) => {
+          
+          res.send({
+            success: true,
+            message: 'valid signin',
+            token: user._id,
+            email: user.email,
+            groups: groups,
+            log: getLog(user.log)
+            
+          })
+        })
       })
     }
   })
