@@ -8,7 +8,10 @@ var router = require('express').Router(),
     function reverseArray(points) {
       let reversedPoints = [];
       for (let i = 0; i < points.length; i++) {
-        reversedPoints.push(points[i].reverse())
+        let lng = points[i][0];
+        points[i][0] = points[i][1];
+        points[i][1] = lng;
+        reversedPoints.push(points[i])
       }
       return reversedPoints;
     };
