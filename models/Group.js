@@ -18,6 +18,10 @@ const GroupSchema = new mongoose.Schema({
   hash: {
     type: String,
     required: true
+  },
+  box: {
+    type: Array,
+    default: ['im the box']
   }
 });
 module.exports = mongoose.model('Group', GroupSchema);

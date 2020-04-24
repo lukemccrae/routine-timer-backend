@@ -135,7 +135,6 @@ router.post('/api/account/signin', (req, res, next) => {
         Group.find({
           user: user._id
         }, (err, groups) => {
-          console.log(user);
           
           res.send({
             success: true,
@@ -303,6 +302,40 @@ router.post('/timer', (req, res, next) => {
     })
   }
 })
+
+router.post('/box', (req, res, next) => {
+  const {
+    body
+  } = req;
+
+  const {
+    box,
+    token,
+    group
+  } = body;
+
+  Group.findOneAndUpdate(
+    { _id: group }, 
+    { $set: { box: box  } },
+    function (error, logs) {
+          if (error) {
+              console.log(error);
+          } else {
+        Group.find({
+          _id: group
+        }, (err, group) => {
+          
+              res.send({
+                success: true,
+                message: 'found it',
+                box: group[0].box
+              })
+            })
+          }
+      });
+})
+
+
 
 router.post('/log', (req, res, next) => {
   const {
