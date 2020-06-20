@@ -21,7 +21,7 @@ const GroupSchema = new mongoose.Schema({
   },
   box: {
     type: Array,
-    default: ['im the box']
+    default: ['']
   }
 });
 module.exports = mongoose.model('Group', GroupSchema);
