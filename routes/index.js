@@ -474,29 +474,27 @@ router.get('/log', (req, res, next) => {
 })
 
 
-// router.get('/email', (req, res, next) => {
+router.get('/email', (req, res, next) => {
 
-//   const {
-//     query
-//   } = req;
-//   const {
-//     email
-//   } = query;
-
-//   console.log(email);
+  const {
+    query
+  } = req;
+  const {
+    email
+  } = query;
 
 
-//   User.find({
-//     email: email
-//   }, (err, user) => {
+  User.find({
+    email: email
+  }, (err, user) => {
       
-//     res.send({
-//       success: true,
-//       message: 'resources found',
-//       log: user[0].log
-//     })
-//   })
-// })
+    res.send({
+      success: true,
+      message: 'resources found',
+      log: user[0].log
+    })
+  })
+})
 
 router.get('/group', (req, res, next) => {
   const {
