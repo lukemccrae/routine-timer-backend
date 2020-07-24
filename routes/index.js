@@ -473,6 +473,31 @@ router.get('/log', (req, res, next) => {
   })
 })
 
+
+router.get('/email', (req, res, next) => {
+
+  const {
+    query
+  } = req;
+  const {
+    email
+  } = query;
+
+  console.log(email);
+
+
+  User.find({
+    email: email
+  }, (err, user) => {
+      
+    res.send({
+      success: true,
+      message: 'resources found',
+      log: user[0].log
+    })
+  })
+})
+
 router.get('/group', (req, res, next) => {
   const {
     query
