@@ -480,12 +480,12 @@ router.get('/email', (req, res, next) => {
     query
   } = req;
   const {
-    email
+    username
   } = query;
 
 
   User.find({
-    email: email
+    email: username
   }, (err, user) => {
       
     res.send({
