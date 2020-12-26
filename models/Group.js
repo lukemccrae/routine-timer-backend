@@ -22,6 +22,10 @@ const GroupSchema = new mongoose.Schema({
   box: {
     type: Array,
     default: ['']
+  },
+  editOpen: {
+    type: Boolean,
+    default: false
   }
 });
 module.exports = mongoose.model('Group', GroupSchema);
