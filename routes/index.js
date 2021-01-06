@@ -488,11 +488,12 @@ router.get('/email', (req, res, next) => {
     email: username
   }, (err, user) => {
       
-    res.send({
+    res.json({
       success: true,
       message: 'resources found',
       log: user[0].log
     })
+
   })
 })
 
