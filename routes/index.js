@@ -603,7 +603,7 @@ router.post('/api/account/signup', (req, res, next) => {
 
       newUser.email = email;
       newUser.firstName = firstName;
-      newUser.lastName = lastName;
+      newUser.lastName = '';
       newUser.password = newUser.generateHash(password)
       newUser.save((err, user) => {
         if (err) {
