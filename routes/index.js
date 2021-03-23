@@ -562,13 +562,6 @@ router.post('/api/account/signup', (req, res, next) => {
     })
   };
 
-  if (!lastName) {
-    res.send({
-      succes: false,
-      message: 'Error: Last name cannot be blank.'
-    })
-  };
-
   if (!password) {
     res.send({
       succes: false,
