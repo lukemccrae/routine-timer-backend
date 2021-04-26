@@ -51,7 +51,6 @@ var db = mongoose.connection;
 
 var app = express();
 
-
 app.use(cors());
 
 //Bind connection to error event (to get notification of connection errors)
