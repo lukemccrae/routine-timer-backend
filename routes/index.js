@@ -210,7 +210,7 @@ router.post('/group', (req, res, next) => {
     body
   } = req;
 
-  
+
   const {
     name,
     timers,
@@ -228,8 +228,6 @@ router.post('/group', (req, res, next) => {
       _id: token,
       isDeleted: false
     }, (err, sessions) => {
-      console.log(sessions)
-      console.log(req.body)
 
       const newGroup = new Group();
 
