@@ -60,11 +60,11 @@ app.use(function (req, res, next) {
   // Website you wish to allow to connect
   // Either front-end deployed or localhost:3001
   // res.setHeader('Access-Control-Allow-Origin', req.headers.origin === 'https://group-timer.firebaseapp.com/' ? 'https://group-timer.firebaseapp.com/' : 'http://localhost:3001');
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Origin', 'https://group-timer.firebaseapp.com');
 
-  // if(req.headers.origin === 'http://localhost:3001') {
-  //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
-  // }
+  if(req.headers.origin === 'http://localhost:3001') {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  }
 
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
