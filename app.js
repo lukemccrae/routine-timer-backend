@@ -57,8 +57,10 @@ app.use(cors());
 // Add headers
 app.use(function (req, res, next) {
 
+  console.log(req)
+
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'https://group-timer.firebaseapp.com');
+  res.setHeader('Access-Control-Allow-Origin', 'https://group-timer.firebaseapp.com' || 'http://localhost:3001' || 'http://localhost:3001');
   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 
