@@ -62,9 +62,9 @@ app.use(function (req, res, next) {
   // res.setHeader('Access-Control-Allow-Origin', req.headers.origin === 'https://group-timer.firebaseapp.com/' ? 'https://group-timer.firebaseapp.com/' : 'http://localhost:3001');
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  if(req.headers.origin === 'http://localhost:3001') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
+  // if(req.headers.origin === 'http://localhost:3001') {
+  //   res.setHeader('Access-Control-Allow-Origin', '*');
+  // }
 
 
   // Request methods you wish to allow
