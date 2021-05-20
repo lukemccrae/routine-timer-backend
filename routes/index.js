@@ -358,7 +358,7 @@ router.post('/log', (req, res, next) => {
     id: id,
     date: date
   }
-  
+
 
   if (!name || !length) {
     res.send({
