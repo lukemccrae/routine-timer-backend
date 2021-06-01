@@ -351,7 +351,6 @@ router.post('/log', (req, res, next) => {
     date
   } = body;
 
-  
   const timer = {
     name: name,
     length: length,
