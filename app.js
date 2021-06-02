@@ -51,6 +51,8 @@ var db = mongoose.connection;
 
 var app = express();
 
+app.keepAliveTimeout = 0;
+
 app.use(cors());
 
 //Hopefully this will help with CORS... holy shit i am so done with this problem
