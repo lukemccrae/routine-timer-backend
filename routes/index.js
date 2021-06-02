@@ -81,19 +81,22 @@ router.post('/api/account/signin', (req, res, next) => {
     email
   } = body;
 
+  console.log(body)
+
   if (!email) {
     res.send({
       succes: false,
       message: ' Error: Email cannot be blank.'
     })
-  };
-  if (!password) {
+  } else if (!password) {
     res.send({
       succes: false,
       message: 'Error: Password cannot be blank.'
     })
-  };
+  } else {
+
   email = email.toLowerCase();
+
 
   User.find({
     email: email
@@ -151,6 +154,7 @@ router.post('/api/account/signin', (req, res, next) => {
       })
     })
   })
+  }
 })
 
 router.get('/api/account/verify', (req, res, next) => {
