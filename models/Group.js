@@ -26,6 +26,11 @@ const GroupSchema = new mongoose.Schema({
   editOpen: {
     type: Boolean,
     default: false
+  },
+  details: {
+    autoNext: false,
+    sound: false,
+    restart: false
   }
 });
 module.exports = mongoose.model('Group', GroupSchema);

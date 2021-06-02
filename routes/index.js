@@ -235,6 +235,7 @@ router.post('/group', (req, res, next) => {
       newGroup.timers = timers;
       newGroup.user = sessions[0].userId
       newGroup.hash = hash;
+      newGroup.details = {autoNext: false, sound: false, restart: false};
       newGroup.save((err, group) => {
         if (err) {
           console.log(err);
@@ -242,6 +243,7 @@ router.post('/group', (req, res, next) => {
           Group.find({
             user: sessions[0].userId
           }, (err, groups) => {
+            console.log(groups)
             res.send({
               success: true,
               message: 'Group added',
@@ -633,7 +635,8 @@ router.patch('/group', function(req, res) {
   Group.findOneAndUpdate({_id: groupId}, {$set:
     {
       name: req.body.name,
-      timers: req.body.timers
+      timers: req.body.timers,
+      details: req.body.details
     }}, (err, group) => {
     res.send({
       success: true,
