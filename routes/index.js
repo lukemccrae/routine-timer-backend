@@ -453,9 +453,13 @@ router.get('/g/:group', (req, res, next) => {
   console.log(groupHash)
 
   Group.find({
-    hash: "imxxhxrw"
+    hash: groupHash
   }, (err, group) => {
-    res.send(group)
+    res.send({
+      group: group,
+      success: true,
+      message: "Group served"
+    })
   })
 })
 
