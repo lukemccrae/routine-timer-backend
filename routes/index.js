@@ -397,6 +397,15 @@ router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
 
   Group.find({
+    user: sessions[0].userId
+  }, (err, groups) => {
+    res.send({
+      success: true,
+      message: 'Group deleted'
+    })
+  })
+
+  Group.find({
     hash: hash
   }, (err, group) => {
     res.render('index', {
@@ -436,6 +445,17 @@ router.get('/timer', (req, res, next) => {
         })
       })
     })
+  })
+})
+
+router.get('/g/:group', (req, res, next) => {
+  const groupHash = req.params.group;
+  console.log(groupHash)
+
+  Group.find({
+    hash: "imxxhxrw"
+  }, (err, group) => {
+    res.send(group)
   })
 })
 
