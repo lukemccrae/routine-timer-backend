@@ -10,6 +10,7 @@ const dotenv = require('dotenv/config');
 
 var index = require('./routes/index');
 var gps = require('./routes/gps');
+var course = require('./routes/course');
 var budget = require('./routes/budget');
 var email = require('./routes/email');
 
@@ -101,6 +102,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(xmlparser());
 
+app.use('/course', course)
 app.use('/', index, email);
 app.use('/gps', gps);
 app.use('/budget', budget);
