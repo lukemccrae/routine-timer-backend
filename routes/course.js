@@ -409,20 +409,19 @@ router.get('/group/display', (req, res, next) => {
   })
 })
 
-router.patch('/course', function(req, res) {
+router.patch('/', function(req, res) {
   const {query} = req;
-  const {groupId} = query;
+  const {courseId} = query;
 
-  Group.findOneAndUpdate({_id: courseId}, {$set:
+  Course.findOneAndUpdate({_id: courseId}, {$set:
     {
       name: req.body.name,
-      timers: req.body.timers,
-      details: req.body.details
-    }}, (err, group) => {
+      stops: req.body.stops
+    }}, (err, course) => {
     res.send({
       success: true,
-      message: 'Group updated',
-      group: group
+      message: 'Course updated',
+      course: course
     })
   })
 })
