@@ -222,7 +222,6 @@ router.get('/api/account/verify', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    console.log("course")
   const {
     body
   } = req;
@@ -230,7 +229,8 @@ router.post('/', (req, res, next) => {
     name,
     details,
     token,
-    hash
+    hash,
+    stops
   } = body;
 
   if (!name) {
@@ -244,13 +244,13 @@ router.post('/', (req, res, next) => {
       isDeleted: false
     }, (err, sessions) => {
 
-      const newCourse = new Group();
+      const newCourse = new Course();
 
       newCourse.name = name;
-      newCourse.timers = timers;
       newCourse.user = sessions[0].userId
       newCourse.hash = hash;
-      newCourse.details = {autoNext: false, sound: false, restart: false};
+      newCourse.stops = stops;
+      console.log(newCourse)
       newCourse.save((err, course) => {
         if (err) {
           console.log(err);
@@ -276,12 +276,11 @@ router.post('/', (req, res, next) => {
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
 
-  Group.find({
+  Course.find({
     user: sessions[0].userId
-  }, (err, groups) => {
+  }, (err, courses) => {
     res.send({
-      success: true,
-      message: 'Group deleted'
+      success: true
     })
   })
 
@@ -367,7 +366,7 @@ router.get('/email', (req, res, next) => {
 })
 
 //why are there two of these???
-router.get('/course', (req, res, next) => {
+router.get('/', (req, res, next) => {
   const {
     query
   } = req;
@@ -428,12 +427,12 @@ router.patch('/course', function(req, res) {
   })
 })
 
-router.delete('/course', function(req, res) {
+router.delete('/', function(req, res) {
   const {
     query
   } = req;
   const {
-    groupId,
+    courseId,
     token
   } = query;
 
@@ -441,7 +440,6 @@ router.delete('/course', function(req, res) {
     _id: token,
     isDeleted: false
   }, (err, sessions) => {
-    console.log(sessions);
     if (err) {
       console.log(err);
       return res.send({
@@ -457,7 +455,7 @@ router.delete('/course', function(req, res) {
       })
     } else {
       Course.deleteOne({
-        _id: groupId
+        _id: courseId
       }, function(err) {
         if (err) {
           console.log(err);
@@ -467,7 +465,8 @@ router.delete('/course', function(req, res) {
           }, (err, courses) => {
             res.send({
               success: true,
-              message: 'Course deleted'
+              message: 'Course deleted',
+              courses: courses.length
             })
           })
         }
