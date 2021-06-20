@@ -9,7 +9,11 @@ const CourseSchema = new mongoose.Schema({
   },
   details: {
       type: Object,
-      required: false
+      required: false,
+      default: {
+        pace: 10,
+        calories: 2000
+      }
   },
   stops  : {
     type: Array,
@@ -26,6 +30,18 @@ const CourseSchema = new mongoose.Schema({
   editOpen: {
     type: Boolean,
     default: false
+  },
+  route: {
+    type: Object,
+    required: true,
+    default: {
+      geoJSON: {
+        properties: {
+          name: "no route stored"
+        }
+      },
+      vert: 1
+    }
   }
 });
 module.exports = mongoose.model('Course', CourseSchema);

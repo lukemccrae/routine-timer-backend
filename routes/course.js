@@ -230,7 +230,8 @@ router.post('/', (req, res, next) => {
     details,
     token,
     hash,
-    stops
+    stops,
+    course
   } = body;
 
   if (!name) {
@@ -250,6 +251,8 @@ router.post('/', (req, res, next) => {
       newCourse.user = sessions[0].userId
       newCourse.hash = hash;
       newCourse.stops = stops;
+      newCourse.course = course;
+      newCourse.details = details;
       console.log(newCourse)
       newCourse.save((err, course) => {
         if (err) {
@@ -413,10 +416,25 @@ router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId} = query;
 
+  let newDetails = {
+    calories: req.body.calories,
+    pace: req.body.pace
+  };
+
+  let newRoute = {
+    distance: req.body.distance,
+    vert: req.body.vert,
+    geoJSON: req.body.geoJSON
+  }
+
+  console.log(newRoute)
+
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
       name: req.body.name,
-      stops: req.body.stops
+      stops: req.body.stops,
+      details: newDetails,
+      route: newRoute
     }}, (err, course) => {
     res.send({
       success: true,

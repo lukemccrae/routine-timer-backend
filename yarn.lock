@@ -689,6 +689,16 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+geojson-elevation-gain@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/geojson-elevation-gain/-/geojson-elevation-gain-0.6.0.tgz#6731168bdfa30ed9ce18854c5c5926ce333ed9ff"
+  integrity sha512-jaURKRSyXA7jSPYmApaYerJJdbOvZhbnJhyAYg4IwAxgqauuxNc7y3grO9O+DDvJyU1/rP+XkwtVpubRSzkZBA==
+
+geojson-length@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/geojson-length/-/geojson-length-0.1.1.tgz#316c75349e51c794d331945b58482926740277f2"
+  integrity sha1-MWx1NJ5Rx5TTMZRbWEgpJnQCd/I=
+
 getpass@^0.1.1:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
