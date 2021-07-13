@@ -2,22 +2,29 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 
 const CourseSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    default: 'New Group',
-    required: true
-  },
   details: {
       type: Object,
       required: false,
       default: {
-        pace: 10,
-        calories: 2000
+        goalHours: 1,
+        goalMinutes: 30,
+        calories: 200,
+        mileTimes: [0],
+        distance: 0,
+        vert: 500,
+        name: 'New Course',
+        vertMod: 300,
+        terrainMod: 1.1
       }
   },
   stops  : {
     type: Array,
-    default: []
+    default: [{
+      name: "Start",
+      cals: 400,
+      miles: 0,
+      id: 1
+    }]
   },
   user: {
     type: String,
@@ -37,10 +44,17 @@ const CourseSchema = new mongoose.Schema({
     default: {
       geoJSON: {
         properties: {
-          name: "no route stored"
+          name: "no route stored",
+          distance: 0,
+          vert: 0,
+          vertInfo: {
+            cumulativeGain: []
+          }
+        },
+        geometry: {
+          coordinates: []
         }
       },
-      vert: 1
     }
   }
 });

@@ -22,6 +22,8 @@
     "express-xml-bodyparser": "^0.3.0",
     "geojson-elevation-gain": "^0.6.0",
     "geojson-length": "^0.1.1",
+    "gpxparser": "^3.0.8",
+    "haversine": "^1.1.1",
     "mongodb": "^3.2.6",
     "mongoose": "^5.4.21",
     "morgan": "~1.7.0",

@@ -5,15 +5,9 @@ var router = require('express').Router(),
     xmlparser = require('express-xml-bodyparser');
     var togpx = require('togpx');
     var geojsonLength = require('geojson-length');
+    var gpxParser = require('gpxparser');
+    const haversine = require('haversine')
 
-    function calcVert(arr) {
-      let result = 0;
-      for (let i = 1; i < arr.length; i++) {
-        let diff = arr[i][2] - arr[i - 1][2] > 0 ? arr[i][2] - arr[i - 1][2] : 0;
-        result += diff;
-      }
-      return result;
-    }
 
     var getElevationGain = function getElevationGain(geojson, numberOfPoints) {
       var coords = [];
@@ -89,13 +83,75 @@ var router = require('express').Router(),
 
     function reverseArray(points) {
       let reversedPoints = [];
-      for (let i = 0; i < points.length; i++) {
+      let uphillDistance = 15;
+      let maxGrade = 0;
+      let grades = [];
+      let maxGrades = [];
+      let uphillCount = 0;
+      let mileGrades = [];
+      let mile = 0;
+      for (let i = 1; i < points.length; i++) {
         let lng = points[i][0];
         points[i][0] = points[i][1];
         points[i][1] = lng;
+        //change elevation from meters to feet
         points[i][2] = points[i][2] * 3.28084;
-        reversedPoints.push(points[i])
+
+        let start = {
+          latitude: points[i - 1][0],
+          longitude: points[i - 1][1]
+        }
+        
+        let end = {
+          latitude: points[i][0],
+          longitude: points[i][1]
+        }
+
+        //rise and run for distance between these two data points
+        let feetBetweenPoints = haversine(start, end, {unit: 'mile'}) * 5280
+        //absolute value of rise / run because we want downhill grades to factor into avg max grade
+        let rise = points[i][2] - points[i - 1][2];
+
+        if(feetBetweenPoints < 100) {
+          mile += feetBetweenPoints
+        }
+
+        let currentMile = Math.floor(mile / 5280)
+        if(mileGrades[currentMile] === undefined) {
+          if(rise < 100 && rise > -100) {
+            mileGrades.push(rise) 
+          }
+        } else if(rise < 100 && rise > -100) {
+          mileGrades[currentMile] = mileGrades[currentMile] + rise
+          // console.log(rise)
+        }
+
+        if(feetBetweenPoints != 0 && rise != 0) {
+          grades.push(rise / feetBetweenPoints)
+        }
+        
+        //if this is an uphill distance, increment uphillDistance to calculate uphill grade
+        if(points[i][2] > points[i - 1][2] && feetBetweenPoints < 300) {
+          uphillDistance += feetBetweenPoints;
+          uphillCount++;
+        }
+        // reversedPoints.push(points[i])
+        //reduce size of geoJSON coordinates
+        if(i % 20 === 0) reversedPoints.push(points[i])
       }
+      //get top 2% of max grades 
+      maxGrades = grades.sort().slice(grades.length * .98, grades.length - 1)
+
+      //add max grades and uphill feet (to be divided by user-inputted distance) into the returned array
+      let vertInfo = {
+        avgMaxGrade: Math.round((maxGrades.reduce((a, b) => (a + b)) / maxGrades.length) * 100),
+        totalUphillFeet: Math.round(uphillDistance),
+        cumulativeGain: mileGrades
+      }
+
+      console.log(uphillDistance, uphillCount)
+      reversedPoints.push(vertInfo)
+      
       return reversedPoints;
     };
 
@@ -104,18 +160,28 @@ router.post('/togeojson', (req, res, next) => {
     var converted = tj.gpx(gpx);
     let points = converted.features[0].geometry.coordinates;
 
-    //tj.gpx inverts lat/lng points so they need to be reversed
-    converted.features[0].geometry.coordinates = reverseArray(points);
+    //reverse array points(need lat, lng --- not lng, lat)
+    let routeData = reverseArray(points);
 
-    //add length of route in miles
+    //pop off vert grade info and store
+    let vertInfo = routeData.pop();
+
+    //add geoJson coordinates to returned object
+    converted.features[0].geometry.coordinates = routeData;
+
+    //add vertInfo to returned object
+    converted.features[0].properties.vertInfo = vertInfo;
+
+    //add length of route and in miles
+    //these datapoints are inaccurate but might be nice to to display estimates
     converted.features[0].properties.distance = geojsonLength(converted.features[0].geometry) * 0.00062137121212121
-    
     converted.features[0].properties.vert = Math.round(getElevationGain(converted.features[0], 100))
 
     //if no name, give gpx a name
     if(converted.features[0].properties.name === "") {
       converted.features[0].properties.name = "unnamed_gpx"
     }
+    
     
 
     res.send({

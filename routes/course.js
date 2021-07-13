@@ -226,18 +226,14 @@ router.post('/', (req, res, next) => {
     body
   } = req;
   const {
-    name,
-    details,
     token,
-    hash,
-    stops,
-    course
+    hash
   } = body;
 
-  if (!name) {
+  if (!hash) {
     res.send({
       succes: false,
-      message: 'Error: Course name is required.'
+      message: 'Error: Course hash is required.'
     })
   } else {
     UserSession.find({
@@ -246,26 +242,21 @@ router.post('/', (req, res, next) => {
     }, (err, sessions) => {
 
       const newCourse = new Course();
-
-      newCourse.name = name;
       newCourse.user = sessions[0].userId
       newCourse.hash = hash;
-      newCourse.stops = stops;
-      newCourse.course = course;
-      newCourse.details = details;
-      console.log(newCourse)
+
       newCourse.save((err, course) => {
+        console.log("saved course", course)
         if (err) {
           console.log(err);
         } else {
             Course.find({
-            user: sessions[0].userId
+            hash: hash
           }, (err, courses) => {
-            console.log(courses)
             res.send({
               success: true,
               message: 'Course added',
-              courses: courses
+              course: courses[0]
             })
           })
 
@@ -416,30 +407,43 @@ router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId} = query;
 
-  let newDetails = {
-    calories: req.body.calories,
-    pace: req.body.pace
-  };
-
-  let newRoute = {
-    distance: req.body.distance,
-    vert: req.body.vert,
-    geoJSON: req.body.geoJSON
-  }
-
-  console.log(newRoute)
+  console.log(req.body)
 
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
-      name: req.body.name,
-      stops: req.body.stops,
-      details: newDetails,
-      route: newRoute
+      details: req.body.details,
+      stops: req.body.stops
     }}, (err, course) => {
+      Course.find({
+        _id: course._id
+      }, (err, courses) => {
+        res.send({
+          success: true,
+          message: 'Modified course returned',
+          course: courses[0]
+        })
+      })
+  })
+})
+
+router.patch('/new', function(req, res) {
+  const {query} = req;
+  const {courseId} = query;
+  console.log("geoJSON is here", req.body)
+
+  let newRoute = {
+    geoJSON: req.body.geoJSON,
+    type: "Feature"
+  }
+
+  Course.findOneAndUpdate({_id: courseId}, {$set:
+    {
+      route: newRoute
+
+    }}, (err, courses) => {
     res.send({
       success: true,
-      message: 'Course updated',
-      course: course
+      message: 'GPX added to course'
     })
   })
 })
