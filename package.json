@@ -26,7 +26,7 @@
     "haversine": "^1.1.1",
     "mongodb": "^3.2.6",
     "mongoose": "^5.4.21",
-    "morgan": "~1.7.0",
+    "morgan": "~1.9.1",
     "node-ses": "^2.2.1",
     "pug": "~2.0.0-beta6",
     "serve-favicon": "~2.3.0",
