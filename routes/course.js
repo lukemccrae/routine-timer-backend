@@ -155,13 +155,12 @@ router.post('/api/account/signin', (req, res, next) => {
         Course.find({
           user: user._id
         }, (err, courses) => {
-          
           res.send({
             success: true,
             message: 'valid signin',
             courses: courses,
             token: doc._id,
-            
+            user: user.email
           })
         })
       })
