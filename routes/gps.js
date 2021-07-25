@@ -3,10 +3,14 @@ var router = require('express').Router(),
     DOMParser = require('xmldom').DOMParser
     fs = require('fs');
     xmlparser = require('express-xml-bodyparser');
-    var togpx = require('togpx');
-    var geojsonLength = require('geojson-length');
-    var gpxParser = require('gpxparser');
-    const haversine = require('haversine')
+var togpx = require('togpx');
+var geojsonLength = require('geojson-length');
+var gpxParser = require('gpxparser');
+const haversine = require('haversine')
+const util = require('util')
+var addElevation = require('geojson-elevation').addElevation;
+var TileSet = require('node-hgt').TileSet;
+const fetch = require('node-fetch');
 
 
     var getElevationGain = function getElevationGain(geojson, numberOfPoints) {
@@ -158,38 +162,68 @@ var router = require('express').Router(),
 router.post('/togeojson', (req, res, next) => {
     const gpx = new DOMParser().parseFromString(req.rawBody, "utf8");
     var converted = tj.gpx(gpx);
-    let points = converted.features[0].geometry.coordinates;
 
-    //reverse array points(need lat, lng --- not lng, lat)
-    let routeData = reverseArray(points);
-
-    //pop off vert grade info and store
-    let vertInfo = routeData.pop();
-
-    //add geoJson coordinates to returned object
-    converted.features[0].geometry.coordinates = routeData;
-
-    //add vertInfo to returned object
-    converted.features[0].properties.vertInfo = vertInfo;
-
-    //add length of route and in miles
-    //these datapoints are inaccurate but might be nice to to display estimates
-    converted.features[0].properties.distance = geojsonLength(converted.features[0].geometry) * 0.00062137121212121
-    converted.features[0].properties.vert = Math.round(getElevationGain(converted.features[0], 100))
-
-    //if no name, give gpx a name
-    if(converted.features[0].properties.name === "") {
-      converted.features[0].properties.name = "unnamed_gpx"
+      //some GPX files come back with multiple coordinate arrays]
+      //if this is the case, combine them
+    if(converted.features.length > 1) {
+      let tempGeo = [];
+      for (let i = 1; i < converted.features.length; i++) {
+        tempGeo = tempGeo.concat(converted.features[i].geometry.coordinates)
+      }
+      let feature = converted.features[0];
+      feature.geometry.coordinates = tempGeo;
+      converted.features = [feature]
     }
-    
-    
 
-    res.send({
-      success: true,
-      message: 'GPX converted to GeoJson succesfully.',
-      geoJson: converted,
-      distance: geojsonLength(converted.features[0].geometry)
-    })
+    //if no elevation, get it
+    if(converted.features[0].geometry.coordinates[0].length < 3) {
+      fetch('http://localhost:3000/', {
+        method: 'post',
+        body:    JSON.stringify(converted),
+        headers: { 'Content-Type': 'application/json' },
+      }).then(res => res.json())
+        .then(json => {
+          sendCourse(json)
+        });
+    } else {
+      sendCourse(converted)
+    }
+
+    function sendCourse(converted) {
+      // console.log("converted", converted, converted.features[0].geometry.coordinates)
+      let points = converted.features[0].geometry.coordinates;
+
+      //reverse array points(need lat, lng --- not lng, lat)
+      let routeData = reverseArray(points);
+
+      //pop off vert grade info and store
+      let vertInfo = routeData.pop();
+
+      //add geoJson coordinates to returned object
+      converted.features[0].geometry.coordinates = routeData;
+
+      //add vertInfo to returned object
+      converted.features[0].properties.vertInfo = vertInfo;
+
+      //add length of route and in miles
+      //these datapoints are inaccurate but might be nice to to display estimates
+      converted.features[0].properties.distance = geojsonLength(converted.features[0].geometry) * 0.00062137121212121
+      converted.features[0].properties.vert = Math.round(getElevationGain(converted.features[0], 100))
+
+      //if no name, give gpx a name
+      if(converted.features[0].properties.name === "") {
+        converted.features[0].properties.name = "unnamed_gpx"
+      }
+      
+      
+
+      res.send({
+        success: true,
+        message: 'GPX converted to GeoJson succesfully.',
+        geoJson: converted,
+        distance: geojsonLength(converted.features[0].geometry)
+      })
+    }
   })
 
   router.post('/togpx', (req, res, next) => {
