@@ -9,6 +9,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@mapbox/geojson-normalize": "^0.0.1",
     "@mapbox/togeojson": "^0.16.0",
     "@tmcw/togeojson": "tmcw/togeojson",
     "aws-api-gateway-client": "^0.2.17",

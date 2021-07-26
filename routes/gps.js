@@ -11,6 +11,7 @@ const util = require('util')
 var addElevation = require('geojson-elevation').addElevation;
 var TileSet = require('node-hgt').TileSet;
 const fetch = require('node-fetch');
+const normalize = require('@mapbox/geojson-normalize');
 
 
     var getElevationGain = function getElevationGain(geojson, numberOfPoints) {
@@ -115,8 +116,10 @@ const fetch = require('node-fetch');
         let feetBetweenPoints = haversine(start, end, {unit: 'mile'}) * 5280
         //absolute value of rise / run because we want downhill grades to factor into avg max grade
         let rise = points[i][2] - points[i - 1][2];
+        console.log(feetBetweenPoints)
 
-        if(feetBetweenPoints < 100) {
+        //this conditional is for a weird large number occuring as a feetBetweenPoints variable
+        if(feetBetweenPoints < 2000) {
           mile += feetBetweenPoints
         }
 
@@ -141,7 +144,8 @@ const fetch = require('node-fetch');
         }
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
-        if(i % 20 === 0) reversedPoints.push(points[i])
+        // if(i % 20 === 0) reversedPoints.push(points[i])
+        reversedPoints.push(points[i])
       }
       //get top 2% of max grades 
       maxGrades = grades.sort().slice(grades.length * .98, grades.length - 1)
@@ -153,7 +157,6 @@ const fetch = require('node-fetch');
         cumulativeGain: mileGrades
       }
 
-      console.log(uphillDistance, uphillCount)
       reversedPoints.push(vertInfo)
       
       return reversedPoints;
@@ -161,35 +164,33 @@ const fetch = require('node-fetch');
 
 router.post('/togeojson', (req, res, next) => {
     const gpx = new DOMParser().parseFromString(req.rawBody, "utf8");
-    var converted = tj.gpx(gpx);
-
+    var converted = normalize(tj.gpx(gpx))
       //some GPX files come back with multiple coordinate arrays]
       //if this is the case, combine them
     if(converted.features.length > 1) {
-      let tempGeo = [];
       for (let i = 1; i < converted.features.length; i++) {
-        tempGeo = tempGeo.concat(converted.features[i].geometry.coordinates)
+        converted.features[0].geometry.coordinates.concat(converted.features[i].geometry.coordinates)
       }
-      let feature = converted.features[0];
-      feature.geometry.coordinates = tempGeo;
-      converted.features = [feature]
+      converted.features = [converted.features[0]]
     }
 
     //if no elevation, get it
     if(converted.features[0].geometry.coordinates[0].length < 3) {
+      console.log("less")
+      console.log(converted)
       fetch('http://localhost:3000/', {
         method: 'post',
         body:    JSON.stringify(converted),
         headers: { 'Content-Type': 'application/json' },
       }).then(res => res.json())
         .then(json => {
-          sendCourse(json)
+          processCourse(json)
         });
     } else {
-      sendCourse(converted)
+      processCourse(converted)
     }
 
-    function sendCourse(converted) {
+    function processCourse(converted) {
       // console.log("converted", converted, converted.features[0].geometry.coordinates)
       let points = converted.features[0].geometry.coordinates;
 
@@ -215,8 +216,6 @@ router.post('/togeojson', (req, res, next) => {
         converted.features[0].properties.name = "unnamed_gpx"
       }
       
-      
-
       res.send({
         success: true,
         message: 'GPX converted to GeoJson succesfully.',

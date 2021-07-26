@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@mapbox/geojson-normalize@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojson-normalize/-/geojson-normalize-0.0.1.tgz#1da1e6b3a7add3ad29909b30f438f60581b7cd80"
+  integrity sha1-HaHms6et060pkJsw9Dj2BYG3zYA=
+
 "@mapbox/togeojson@^0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@mapbox/togeojson/-/togeojson-0.16.0.tgz#5b283001078431821dc74e287acaf56a11ceb37c"
