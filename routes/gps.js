@@ -176,16 +176,18 @@ router.post('/togeojson', (req, res, next) => {
 
     //if no elevation, get it
     if(converted.features[0].geometry.coordinates[0].length < 3) {
-      console.log("less")
-      console.log(converted)
-      fetch('http://localhost:3000/', {
-        method: 'post',
-        body:    JSON.stringify(converted),
-        headers: { 'Content-Type': 'application/json' },
-      }).then(res => res.json())
-        .then(json => {
-          processCourse(json)
-        });
+      res.send({
+        success: false,
+        message: "This GPX file has no elevation points."
+      })
+      // fetch('http://localhost:3000/', {
+      //   method: 'post',
+      //   body:    JSON.stringify(converted),
+      //   headers: { 'Content-Type': 'application/json' },
+      // }).then(res => res.json())
+      //   .then(json => {
+      //     processCourse(json)
+      //   });
     } else {
       processCourse(converted)
     }

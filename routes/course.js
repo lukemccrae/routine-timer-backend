@@ -442,7 +442,8 @@ router.patch('/new', function(req, res) {
     }}, (err, courses) => {
     res.send({
       success: true,
-      message: 'GPX added to course'
+      message: 'GPX added to course',
+      route: newRoute
     })
   })
 })

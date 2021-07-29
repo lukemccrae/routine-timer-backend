@@ -44,7 +44,6 @@ const connectWithRetry = () => {
     setTimeout(connectWithRetry, 5000)
   })
 }
-
 connectWithRetry()
 
 //Get the default connection
@@ -115,6 +114,7 @@ app.use(function(req, res, next) {
   next(err);
 });
 
+app.use(cors());
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
