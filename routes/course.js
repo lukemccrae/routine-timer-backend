@@ -201,6 +201,7 @@ router.get('/api/account/verify', (req, res, next) => {
       });
     }
 
+    const courseList = [];
     if (sessions.length < 1) {
       return res.send({
         success: false,
@@ -214,13 +215,20 @@ router.get('/api/account/verify', (req, res, next) => {
         Course.find({
           user: sessions[0].userId
         }, (err, courses) => {
+          courses.forEach(course => {
+            courseList.push({
+              id: course._id,
+              name: course.details.name
+            })
+          });
           
           res.send({
             success: true,
             message: 'valid signin',
             token: user._id,
             email: user.email,
-            courses: courses
+            courses: courses,
+            courseList: courseList
             
           })
         })
