@@ -149,18 +149,27 @@ router.post('/api/account/signin', (req, res, next) => {
         });
       }
 
+    const courseList = [];
+
       CourseUser.find({
         user: user._id
       }, (err, timers) => {
         Course.find({
           user: user._id
         }, (err, courses) => {
+          courses.forEach(course => {
+            courseList.push({
+              id: course._id,
+              name: course.details.name
+            })
+          });
           res.send({
             success: true,
             message: 'valid signin',
             courses: courses,
             token: doc._id,
-            user: user.email
+            user: user.email,
+            courseList: courseList
           })
         })
       })
@@ -364,7 +373,7 @@ router.get('/', (req, res, next) => {
     query
   } = req;
   const {
-    token
+    token, id
   } = query;
 
   UserSession.find({
@@ -372,12 +381,12 @@ router.get('/', (req, res, next) => {
     isDeleted: false
   }, (err, sessions) => {
     Course.find({
-      user: sessions[0].userId
-    }, (err, courses) => {
+      id: id
+    }, (err, course) => {
       res.send({
         success: true,
-        message: 'Courses found',
-        courses: courses
+        message: 'Course found',
+        course: course
       })
     })
   })
@@ -439,11 +448,11 @@ router.patch('/new', function(req, res) {
     {
       route: newRoute
 
-    }}, (err, courses) => {
+    }}, (err, course) => {
     res.send({
       success: true,
       message: 'GPX added to course',
-      route: newRoute
+      course: course
     })
   })
 })
