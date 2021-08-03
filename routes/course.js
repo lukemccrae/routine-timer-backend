@@ -229,7 +229,7 @@ router.get('/api/account/verify', (req, res, next) => {
             message: 'valid signin',
             token: user._id,
             email: user.email,
-            // courses: courses,
+            courses: courses,
             courseList: courseList
             
           })
