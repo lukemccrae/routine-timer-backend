@@ -160,7 +160,8 @@ router.post('/api/account/signin', (req, res, next) => {
           courses.forEach(course => {
             courseList.push({
               id: course._id,
-              name: course.details.name
+              name: course.details.name,
+              hash: course.details.hash
             })
           });
           res.send({
@@ -218,7 +219,8 @@ router.get('/api/account/verify', (req, res, next) => {
           courses.forEach(course => {
             courseList.push({
               id: course._id,
-              name: course.details.name
+              name: course.details.name,
+              hash: course.details.hash,
             })
           });
           
@@ -269,10 +271,19 @@ router.post('/', (req, res, next) => {
             Course.find({
             hash: hash
           }, (err, courses) => {
+            const courseList = [];
+            courses.forEach(course => {
+              courseList.push({
+                id: course._id,
+                name: course.details.name,
+                hash: course.details.hash,
+              })
+            });
             res.send({
               success: true,
               message: 'Course added',
-              course: courses[0]
+              course: courses[0],
+              courseList: courseList
             })
           })
 
@@ -312,7 +323,7 @@ router.get('/course', (req, res, next) => {
     query
   } = req;
   const {
-    token
+    token, id
   } = query;
 
   UserSession.find({
@@ -323,55 +334,16 @@ router.get('/course', (req, res, next) => {
       _id: sessions[0].userId
     }, (err, user) => {
       Course.find({
-        user: sessions[0].userId
-      }, (err, courses) => {
+        _id: id
+      }, (err, course) => {
         
         res.send({
           success: true,
           message: 'resources found',
-          courses: courses
+          course: course
         })
       })
     })
-  })
-})
-
-router.get('/g/:group', (req, res, next) => {
-  const groupHash = req.params.group;
-  console.log(groupHash)
-
-  Group.find({
-    hash: groupHash
-  }, (err, group) => {
-    res.send({
-      group: group,
-      success: true,
-      message: "Group served"
-    })
-  })
-})
-
-
-router.get('/email', (req, res, next) => {
-
-  const {
-    query
-  } = req;
-  const {
-    username
-  } = query;
-
-
-  User.find({
-    email: username
-  }, (err, user) => {
-      
-    res.json({
-      success: true,
-      message: 'resources found',
-      log: user[0].log
-    })
-
   })
 })
 
@@ -433,6 +405,7 @@ router.patch('/', function(req, res) {
       Course.find({
         _id: course._id
       }, (err, courses) => {
+        
         res.send({
           success: true,
           message: 'Modified course returned',
@@ -501,10 +474,19 @@ router.delete('/', function(req, res) {
           Course.find({
             user: sessions[0].userId
           }, (err, courses) => {
+            const courseList = []
+            courses.forEach(course => {
+              courseList.push({
+                id: course._id,
+                name: course.details.name,
+                hash: course.details.hash,
+              })
+            });
+
             res.send({
               success: true,
               message: 'Course deleted',
-              courses: courses.length
+              courseList: courseList
             })
           })
         }
