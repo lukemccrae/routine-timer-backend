@@ -220,7 +220,7 @@ router.get('/api/account/verify', (req, res, next) => {
             courseList.push({
               id: course._id,
               name: course.details.name,
-              hash: course.hash,
+              hash: course.hash
             })
           });
           
@@ -229,7 +229,7 @@ router.get('/api/account/verify', (req, res, next) => {
             message: 'valid signin',
             token: user._id,
             email: user.email,
-            courses: courses,
+            course: courses[0],
             courseList: courseList
             
           })
