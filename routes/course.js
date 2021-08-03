@@ -511,6 +511,7 @@ router.get('/api/account/logout', (req, res, next) => {
     token
   } = query;
 
+  
   UserSession.findOneAndUpdate({
     _id: token,
     isDeleted: false
