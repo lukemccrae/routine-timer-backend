@@ -161,7 +161,7 @@ router.post('/api/account/signin', (req, res, next) => {
             courseList.push({
               id: course._id,
               name: course.details.name,
-              hash: course.details.hash
+              hash: course.hash
             })
           });
           res.send({
@@ -220,7 +220,7 @@ router.get('/api/account/verify', (req, res, next) => {
             courseList.push({
               id: course._id,
               name: course.details.name,
-              hash: course.details.hash,
+              hash: course.hash,
             })
           });
           
@@ -276,7 +276,7 @@ router.post('/', (req, res, next) => {
               courseList.push({
                 id: course._id,
                 name: course.details.name,
-                hash: course.details.hash,
+                hash: course.hash,
               })
             });
             res.send({
@@ -479,7 +479,7 @@ router.delete('/', function(req, res) {
               courseList.push({
                 id: course._id,
                 name: course.details.name,
-                hash: course.details.hash,
+                hash: course.hash,
               })
             });
 
