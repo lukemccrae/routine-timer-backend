@@ -229,7 +229,7 @@ router.get('/api/account/verify', (req, res, next) => {
             message: 'valid signin',
             token: user._id,
             email: user.email,
-            courses: courses,
+            // courses: courses,
             courseList: courseList
             
           })
@@ -361,8 +361,9 @@ router.get('/', (req, res, next) => {
     isDeleted: false
   }, (err, sessions) => {
     Course.find({
-      id: id
+      _id: id
     }, (err, course) => {
+      console.log(course)
       res.send({
         success: true,
         message: 'Course found',
