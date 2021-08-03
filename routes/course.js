@@ -167,10 +167,11 @@ router.post('/api/account/signin', (req, res, next) => {
           res.send({
             success: true,
             message: 'valid signin',
-            courses: courses,
+            course: courses[0],
             token: doc._id,
             user: user.email,
-            courseList: courseList
+            courseList: courseList,
+            courses: courses
           })
         })
       })
@@ -230,7 +231,8 @@ router.get('/api/account/verify', (req, res, next) => {
             token: user._id,
             email: user.email,
             course: courses[0],
-            courseList: courseList
+            courseList: courseList,
+            courses: courses
             
           })
         })
@@ -283,7 +285,8 @@ router.post('/', (req, res, next) => {
               success: true,
               message: 'Course added',
               course: courses[0],
-              courseList: courseList
+              courseList: courseList,
+              courses: courses
             })
           })
 
