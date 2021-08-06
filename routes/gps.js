@@ -144,8 +144,8 @@ const normalize = require('@mapbox/geojson-normalize');
         }
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
-        // if(i % 20 === 0) reversedPoints.push(points[i])
-        reversedPoints.push(points[i])
+        if(i % 10 === 0) reversedPoints.push(points[i])
+        // reversedPoints.push(points[i])
       }
       //get top 2% of max grades 
       maxGrades = grades.sort().slice(grades.length * .98, grades.length - 1)
