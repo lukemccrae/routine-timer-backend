@@ -17,7 +17,7 @@
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
-    "debug": "~2.2.0",
+    "debug": "~2.6.9",
     "dotenv": "^8.0.0",
     "elevation": "^1.0.7",
     "express": "~4.14.0",
