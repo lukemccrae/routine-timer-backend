@@ -33,7 +33,7 @@
     "node-fetch": "^2.6.1",
     "node-hgt": "^1.2.3",
     "node-ses": "^2.2.1",
-    "pug": "~2.0.0-beta6",
+    "pug": "~3.0.1",
     "serve-favicon": "~2.3.0",
     "togeojson": "^0.16.0",
     "togpx": "^0.5.4",
