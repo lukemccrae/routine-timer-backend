@@ -17,6 +17,7 @@ const CourseSchema = new mongoose.Schema({
         terrainMod: 1.1
       }
   },
+  paceAdjust: [],
   stops  : {
     type: Array,
     default: [{
@@ -52,7 +53,8 @@ const CourseSchema = new mongoose.Schema({
           }
         },
         geometry: {
-          coordinates: []
+          coordinates: [],
+          milePoints: []
         }
       },
     }

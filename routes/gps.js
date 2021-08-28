@@ -95,6 +95,7 @@ const normalize = require('@mapbox/geojson-normalize');
       let uphillCount = 0;
       let mileGrades = [];
       let mile = 0;
+      let milePoints = [[]];
       for (let i = 1; i < points.length; i++) {
         let lng = points[i][0];
         points[i][0] = points[i][1];
@@ -124,6 +125,10 @@ const normalize = require('@mapbox/geojson-normalize');
         }
 
         let currentMile = Math.floor(mile / 5280)
+
+        //push points into milePoints so we have the points split up per mile
+        if(milePoints.length === currentMile) milePoints.push([])
+        
         if(mileGrades[currentMile] === undefined) {
           if(rise < 100 && rise > -100) {
             mileGrades.push(rise) 
@@ -144,7 +149,11 @@ const normalize = require('@mapbox/geojson-normalize');
         }
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
-        if(i % 10 === 0) reversedPoints.push(points[i])
+        if(i % 10 === 0) {
+          console.log(currentMile, milePoints.length)
+          milePoints[currentMile].push(points[i])
+          reversedPoints.push(points[i])
+        }
         // reversedPoints.push(points[i])
       }
       //get top 2% of max grades 
@@ -158,6 +167,7 @@ const normalize = require('@mapbox/geojson-normalize');
       }
 
       reversedPoints.push(vertInfo)
+      reversedPoints.push(milePoints)
       
       return reversedPoints;
     };
@@ -199,11 +209,17 @@ router.post('/togeojson', (req, res, next) => {
       //reverse array points(need lat, lng --- not lng, lat)
       let routeData = reverseArray(points);
 
+      //pop off mile points
+      let milePoints = routeData.pop();
+
       //pop off vert grade info and store
       let vertInfo = routeData.pop();
 
       //add geoJson coordinates to returned object
       converted.features[0].geometry.coordinates = routeData;
+
+      //add milePoints to returned object
+      converted.features[0].geometry.milePoints = milePoints;
 
       //add vertInfo to returned object
       converted.features[0].properties.vertInfo = vertInfo;

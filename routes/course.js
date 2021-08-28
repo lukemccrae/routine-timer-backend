@@ -230,7 +230,6 @@ router.get('/api/account/verify', (req, res, next) => {
             message: 'valid signin',
             token: user._id,
             email: user.email,
-            course: courses[0],
             courseList: courseList,
             // courses: courses
             
@@ -339,6 +338,7 @@ router.get('/course', (req, res, next) => {
       Course.find({
         _id: id
       }, (err, course) => {
+        console.log(course)
         
         res.send({
           success: true,
@@ -399,12 +399,13 @@ router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId, token} = query;
 
-  console.log(req.body)
+  console.log(req.body, "hi")
 
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
       details: req.body.details,
-      stops: req.body.stops
+      stops: req.body.stops,
+      paceAdjust: req.body.paceAdjust
     }}, (err, courses) => {
 
       UserSession.find({
@@ -442,16 +443,20 @@ router.patch('/', function(req, res) {
 router.patch('/new', function(req, res) {
   const {query} = req;
   const {courseId} = query;
-  console.log("geoJSON is here", req.body)
 
   let newRoute = {
     geoJSON: req.body.geoJSON,
     type: "Feature"
   }
 
+  console.log(newRoute.geoJSON.properties.vertInfo)
+
+  console.log(newRoute)
+
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
-      route: newRoute
+      route: newRoute,
+      paceAdjust: new Array(newRoute.geoJSON.properties.vertInfo.cumulativeGain.length).fill(0)
 
     }}, (err, course) => {
     res.send({
