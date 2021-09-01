@@ -149,7 +149,7 @@ const normalize = require('@mapbox/geojson-normalize');
         }
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
-        if(i % 10 === 0) {
+        if(i % 5 === 0) {
           console.log(currentMile, milePoints.length)
           milePoints[currentMile].push(points[i])
           reversedPoints.push(points[i])
