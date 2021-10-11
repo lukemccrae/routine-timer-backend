@@ -3,16 +3,10 @@ var router = require('express').Router(),
     DOMParser = require('xmldom').DOMParser
     fs = require('fs');
     xmlparser = require('express-xml-bodyparser');
-var togpx = require('togpx');
-var geojsonLength = require('geojson-length');
-var gpxParser = require('gpxparser');
-const haversine = require('haversine')
-const util = require('util')
-var addElevation = require('geojson-elevation').addElevation;
-var TileSet = require('node-hgt').TileSet;
-const fetch = require('node-fetch');
-const normalize = require('@mapbox/geojson-normalize');
-
+    var togpx = require('togpx');
+    var geojsonLength = require('geojson-length');
+    const haversine = require('haversine')
+    const normalize = require('@mapbox/geojson-normalize');
 
     var getElevationGain = function getElevationGain(geojson, numberOfPoints) {
       var coords = [];
