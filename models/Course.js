@@ -14,7 +14,8 @@ const CourseSchema = new mongoose.Schema({
         vert: 500,
         name: 'New Course',
         vertMod: 300,
-        terrainMod: 1.1
+        terrainMod: 1.1,
+        startTime: "06:00"
       }
   },
   paceAdjust: [],
@@ -49,7 +50,8 @@ const CourseSchema = new mongoose.Schema({
           distance: 0,
           vert: 0,
           vertInfo: {
-            cumulativeGain: []
+            cumulativeGain: [],
+            cumulativeLoss: []
           }
         },
         geometry: {

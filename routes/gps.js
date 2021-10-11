@@ -93,10 +93,12 @@ const normalize = require('@mapbox/geojson-normalize');
       let grades = [];
       let maxGrades = [];
       let uphillCount = 0;
-      let mileGrades = [];
+      let gain = [];
+      let loss = [];
       let mile = 0;
       let milePoints = [[]];
       for (let i = 1; i < points.length; i++) {
+        //reverse lat lng order
         let lng = points[i][0];
         points[i][0] = points[i][1];
         points[i][1] = lng;
@@ -115,7 +117,7 @@ const normalize = require('@mapbox/geojson-normalize');
 
         //rise and run for distance between these two data points
         let feetBetweenPoints = haversine(start, end, {unit: 'mile'}) * 5280
-        //absolute value of rise / run because we want downhill grades to factor into avg max grade
+
         let rise = points[i][2] - points[i - 1][2];
         console.log(feetBetweenPoints)
 
@@ -128,14 +130,28 @@ const normalize = require('@mapbox/geojson-normalize');
 
         //push points into milePoints so we have the points split up per mile
         if(milePoints.length === currentMile) milePoints.push([])
-        
-        if(mileGrades[currentMile] === undefined) {
-          if(rise < 100 && rise > -100) {
-            mileGrades.push(rise) 
+
+        //is it gain or loss?
+        if(rise > 0) {
+          //gain
+          if(gain[currentMile] === undefined) {
+            if(rise < 100 && rise > -100) {
+              gain.push(rise) 
+            }
+          } else if(rise < 100 && rise > -100) {
+            gain[currentMile] = gain[currentMile] + rise
+            // console.log(rise)
           }
-        } else if(rise < 100 && rise > -100) {
-          mileGrades[currentMile] = mileGrades[currentMile] + rise
-          // console.log(rise)
+        } else {
+          //loss
+          if(loss[currentMile] === undefined) {
+            if(rise < 100 && rise > -100) {
+              loss.push(rise) 
+            }
+          } else if(rise < 100 && rise > -100) {
+            loss[currentMile] = loss[currentMile] + rise
+            // console.log(rise)
+          }
         }
 
         if(feetBetweenPoints != 0 && rise != 0) {
@@ -149,13 +165,14 @@ const normalize = require('@mapbox/geojson-normalize');
         }
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
-        if(i % 10 === 0) {
+        if(i % 2 === 0) {
           console.log(currentMile, milePoints.length)
           milePoints[currentMile].push(points[i])
           reversedPoints.push(points[i])
         }
         // reversedPoints.push(points[i])
       }
+
       //get top 2% of max grades 
       maxGrades = grades.sort().slice(grades.length * .98, grades.length - 1)
 
@@ -163,8 +180,11 @@ const normalize = require('@mapbox/geojson-normalize');
       let vertInfo = {
         avgMaxGrade: Math.round((maxGrades.reduce((a, b) => (a + b)) / maxGrades.length) * 100),
         totalUphillFeet: Math.round(uphillDistance),
-        cumulativeGain: mileGrades
+        cumulativeGain: gain,
+        cumulativeLoss: loss
       }
+
+      console.log(vertInfo)
 
       reversedPoints.push(vertInfo)
       reversedPoints.push(milePoints)
