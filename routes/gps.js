@@ -113,7 +113,7 @@ var router = require('express').Router(),
         let feetBetweenPoints = haversine(start, end, {unit: 'mile'}) * 5280
 
         let rise = points[i][2] - points[i - 1][2];
-        console.log(feetBetweenPoints)
+        // console.log(feetBetweenPoints)
 
         //this conditional is for a weird large number occuring as a feetBetweenPoints variable
         if(feetBetweenPoints < 2000) {
@@ -160,7 +160,7 @@ var router = require('express').Router(),
         // reversedPoints.push(points[i])
         //reduce size of geoJSON coordinates
         if(i % 2 === 0) {
-          console.log(currentMile, milePoints.length)
+          // console.log(currentMile, milePoints.length)
           milePoints[currentMile].push(points[i])
           reversedPoints.push(points[i])
         }
@@ -169,6 +169,12 @@ var router = require('express').Router(),
 
       //get top 2% of max grades 
       maxGrades = grades.sort().slice(grades.length * .98, grades.length - 1)
+
+      //having error when gpx file comes in with all of the same elevation points
+      //return error 
+      if(maxGrades.length < 5) {
+        throw "The elevation points in this file could not be processed. Try finding this same route from another source and try again.";
+      }
 
       //add max grades and uphill feet (to be divided by user-inputted distance) into the returned array
       let vertInfo = {
@@ -198,7 +204,7 @@ router.post('/togeojson', (req, res, next) => {
       converted.features = [converted.features[0]]
     }
 
-    //if no elevation, get it
+    //if no elevation, get it (cant for now, need to figure out how to host this service)
     if(converted.features[0].geometry.coordinates[0].length < 3) {
       res.send({
         success: false,
@@ -213,7 +219,14 @@ router.post('/togeojson', (req, res, next) => {
       //     processCourse(json)
       //   });
     } else {
-      processCourse(converted)
+      try {
+        processCourse(converted)
+      } catch(error) {
+        res.send({
+          success: false,
+          message: error
+        })
+      }
     }
 
     function processCourse(converted) {
