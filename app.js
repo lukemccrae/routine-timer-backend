@@ -1,20 +1,36 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv/config');
 
-var index = require('./routes/index');
-var gps = require('./routes/gps');
-var course = require('./routes/course');
-var budget = require('./routes/budget');
-var email = require('./routes/email');
+const index = require('./routes/index');
+const gps = require('./routes/gps');
+const course = require('./routes/course');
+const budget = require('./routes/budget');
+const email = require('./routes/email');
 
-var users = require('./routes/users');
+const users = require('./routes/users');
+
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./schema/schema')
+
+const resolvers = require('./resolvers/resolvers')
+
+const app = express();
+app.use(cors({}));
+
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: resolvers,
+  graphiql: true,
+}));
+
 
 //Set up default mongoose connection
 // var env = process.env.MONGODB_URI || 'dev';
@@ -25,15 +41,6 @@ const MONGODB_URI = process.env.MONGOLAB_URI;
 // var mongodb = process.env.API_HOST;
 console.log(MONGODB_URI, 'mongodb log');
 
-const options = {
-    autoIndex: false, // Don't build indexes
-    reconnectTries: 30, // Retry up to 30 times
-    reconnectInterval: 500, // Reconnect every 500ms
-    poolSize: 10, // Maintain up to 10 socket connections
-    // If not connected, return errors immediately rather than waiting for reconnect
-    bufferMaxEntries: 0,
-    useNewUrlParser: true
-  }
 
 const connectWithRetry = () => {
   console.log('MongoDB connection with retry')
@@ -47,13 +54,11 @@ const connectWithRetry = () => {
 connectWithRetry()
 
 //Get the default connection
-var db = mongoose.connection;
-
-var app = express();
+const db = mongoose.connection;
 
 app.keepAliveTimeout = 0;
 
-app.use(cors());
+
 
 //Hopefully this will help with CORS... holy shit i am so done with this problem
 // Add headers
@@ -68,6 +73,7 @@ app.use(function (req, res, next) {
   // if(req.headers.origin === 'http://localhost:3001') {
   //   res.setHeader('Access-Control-Allow-Origin', '*');
   // }
+
 
 
   // Request methods you wish to allow
@@ -109,7 +115,7 @@ app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

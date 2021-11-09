@@ -149,31 +149,14 @@ router.post('/api/account/signin', (req, res, next) => {
         });
       }
 
-    const courseList = [];
-
-      CourseUser.find({
-        user: user._id
-      }, (err, timers) => {
-        Course.find({
-          user: user._id
-        }, (err, courses) => {
-          courses.forEach(course => {
-            courseList.push({
-              id: course._id,
-              name: course.details.name,
-              hash: course.hash
-            })
-          });
-          res.send({
-            success: true,
-            message: 'valid signin',
-            course: courses[0],
-            token: doc._id,
-            user: user.email,
-            courseList: courseList,
-            // courses: courses
-          })
-        })
+      res.send({
+        success: true,
+        message: 'valid signin',
+        course: courses[0],
+        token: doc._id,
+        user: user.email,
+        courseList: courseList,
+        // courses: courses
       })
     })
   })
@@ -240,6 +223,63 @@ router.get('/api/account/verify', (req, res, next) => {
   })
 })
 
+router.get('/courseList', function(req, res, next) {
+  const {
+    query
+  } = req;
+  const {
+    token, id
+  } = query;
+
+  if(id && token) {
+    UserSession.find({
+      _id: token,
+      isDeleted: false
+    }, (err, sessions) => {
+      if(sessions.length === 0) {
+        res.send({
+          success: false,
+          message: 'no user sessions found',
+        })
+      }
+      CourseUser.find({
+        _id: sessions[0].userId
+      }, (err, user) => {
+        if(user.length === 0) {
+          res.send({
+            success: false,
+            message: 'no user found',
+          })
+        }
+        Course.find({
+          user: sessions[0].userId
+        }, (err, courses) => {
+          if(courses.length === 0) {
+            res.send({
+              success: false,
+              message: 'no courses found',
+            })
+          } else {
+            res.send({
+              success: true,
+              message: 'resources found',
+              courses: courses
+            })
+          }
+        })
+
+      })
+    })
+  } else {
+    res.send({
+      success: false,
+      message: 'session token and userId required',
+    })
+  }
+
+
+});
+
 router.post('/', (req, res, next) => {
   const {
     body
@@ -295,7 +335,6 @@ router.post('/', (req, res, next) => {
   }
 })
 
-
 router.get('/hash/:hash', function(req, res, next) {
   const hash = req.params.hash;
 
@@ -320,7 +359,6 @@ router.get('/hash/:hash', function(req, res, next) {
 
 router.get('/course', (req, res, next) => {
 
-
   const {
     query
   } = req;
@@ -332,9 +370,10 @@ router.get('/course', (req, res, next) => {
     _id: token,
     isDeleted: false
   }, (err, sessions) => {
-    User.find({
+    CourseUser.find({
       _id: sessions[0].userId
     }, (err, user) => {
+      
       Course.find({
         _id: id
       }, (err, course) => {

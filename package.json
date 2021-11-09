@@ -12,6 +12,7 @@
     "@mapbox/geojson-normalize": "^0.0.1",
     "@mapbox/togeojson": "^0.16.0",
     "@tmcw/togeojson": "tmcw/togeojson",
+    "apollo-datasource-rest": "^3.4.0",
     "aws-api-gateway-client": "^0.2.17",
     "bcrypt": "^3.0.5",
     "body-parser": "~1.15.2",
@@ -21,6 +22,8 @@
     "dotenv": "^8.0.0",
     "elevation": "^1.0.7",
     "express": "~4.14.0",
+    "express-graphql": "^0.12.0",
+    "express-winston": "^4.2.0",
     "express-xml-bodyparser": "^0.3.0",
     "geojson-elevation": "^1.1.2",
     "geojson-elevation-gain": "^0.6.0",
@@ -37,6 +40,7 @@
     "serve-favicon": "~2.3.0",
     "togeojson": "^0.16.0",
     "togpx": "^0.5.4",
+    "winston": "^3.3.3",
     "xml2js": "^0.4.23"
   }
 }
