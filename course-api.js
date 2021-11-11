@@ -1,6 +1,8 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
+const Course = require('./models/Course');
+const fetch = require("node-fetch")
 
-class CourseAPI extends RESTDataSource {
+class RestAPI extends RESTDataSource {
     constructor() {
         super();
 
@@ -9,16 +11,28 @@ class CourseAPI extends RESTDataSource {
         this.baseURL = "https://banana-crumble-42815.herokuapp.com/course"
     }
 
-    getCourses() {
-        return this.get();
-    }
 
-    getCourseNamesIds(userId, token) { 
-        console.log("courses")
-        return this.get(`courseList?id=${userId}&token=${token}`);
-    }
+}
 
-    getRoute() {
+//couldnt figure out how to make it work like the tutorial
+    //different GQL libraries are confusing
+    //here im just writing my own methods to grab data from my routes
+
+const baseUrl =  "https://banana-crumble-42815.herokuapp.com/course/";
+const baseUrlDev = "http://localhost:3005/course/";
+const CourseAPI = {
+    getCourses: () => {
+    },
+
+    getCourseNamesIds: async (userId, token) => { 
+        const response = await fetch(`${baseUrlDev}courseList?id=${userId}&token=${token}`);
+        const course = await response.json();
+        return course;
+    },
+
+    getRoute: () => {
 
     }
 }
+
+module.exports = CourseAPI;

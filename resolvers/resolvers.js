@@ -1,10 +1,16 @@
+const CourseAPI = require("../course-api")
+
+
+
 const resolvers = {
     Query: {
-        courseNamesIds: (_, {userId, token}, { dataSources }) => {
-            console.log("hihihi")
-            return "hii"
-            return dataSources.CourseAPI.getCourseNamesIds(userId, token)
-        }
+        // courseNamesIds: (_, {id, token}, {dataSources}) => {
+        //     console.log(id, token)
+        //     return ["hi"]
+        //     dataSources.CourseAPI.getCourseNamesIds("userId", "token")
+        //     return dataSources.CourseAPI.getCourseNamesIds("userId", "token")
+        //     return dataSources.CourseAPI.getCourseNamesIds(userId, token)
+        // }
     },
     
 
@@ -18,6 +24,12 @@ const resolvers = {
         console.log("hi")
       return 'Hello worlddddd!';
     },
+    courseNamesIds: ({id, token}, __, dataSources) => {
+        return CourseAPI.getCourseNamesIds(id, token).then((data)=> {
+            return data.courses;
+        })
+    }
+
   };
   
   module.exports = resolvers;
