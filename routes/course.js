@@ -228,10 +228,10 @@ router.get('/courseList', function(req, res, next) {
     query
   } = req;
   const {
-    token, id
+    token
   } = query;
 
-  if(id && token) {
+  if(token) {
     UserSession.find({
       _id: token,
       isDeleted: false
@@ -398,6 +398,8 @@ router.get('/', (req, res, next) => {
     token, id
   } = query;
 
+  console.log(id)
+
   UserSession.find({
     _id: token,
     isDeleted: false
@@ -405,7 +407,7 @@ router.get('/', (req, res, next) => {
     Course.find({
       _id: id
     }, (err, course) => {
-      console.log(course)
+      console.log(course, "course")
       res.send({
         success: true,
         message: 'Course found',
@@ -414,25 +416,6 @@ router.get('/', (req, res, next) => {
     })
   })
 })
-
-// router.get('/group/display', (req, res, next) => {
-//   const {
-//     query
-//   } = req;
-//   const {
-//     hash
-//   } = query;
-
-//   Group.find({
-//     hash: hash
-//   }, (err, group) => {
-//     res.send({
-//       success: true,
-//       message: 'Group found',
-//       group: group
-//     })
-//   })
-// })
 
 router.patch('/', function(req, res) {
   const {query} = req;
@@ -476,8 +459,6 @@ router.patch('/', function(req, res) {
 
       })
   })
-
-  
 
 router.patch('/new', function(req, res) {
   const {query} = req;

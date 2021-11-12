@@ -24,8 +24,9 @@ const CourseAPI = {
     getCourses: () => {
     },
 
-    getCourseNamesIds: async (userId, token) => { 
-        const response = await fetch(`${baseUrlDev}courseList?id=${userId}&token=${token}`);
+    getCourseNamesIds: async (token) => { 
+        console.log(token, "course-api")
+        const response = await fetch(`${baseUrlDev}courseList?token=${token}`);
         const course = await response.json();
         return course;
     },
