@@ -6,7 +6,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "jest --runInBand --config jest.config.json"
   },
   "dependencies": {
     "@mapbox/geojson-normalize": "^0.0.1",
@@ -31,6 +32,7 @@
     "gpxparser": "^3.0.8",
     "graphql": "^16.0.1",
     "haversine": "^1.1.1",
+    "jest": "^27.3.1",
     "mongodb": "^3.2.6",
     "mongoose": "^5.4.21",
     "morgan": "~1.7.0",

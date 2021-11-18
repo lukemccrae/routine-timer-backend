@@ -6,14 +6,21 @@ var schema = buildSchema(`
   type Query {
     hello: String,
     courseNamesIds(token: String!): [CourseList]
-    mileTimes(token: String): MileTimes
+    mileTimesInfo(token: String, courseId: String): [MileTimes]
+    getCourseInfo(token: String, courseId: String): Course
+  }
+
+  type Course {
+    stops: Stops
+    route: Route
+    details: Details
   }
 
   type MileTimes {
-    details {
-      goalHours
-      goalMinutes
-    }
+    _id: ID
+    details: Details
+    hash: String
+    route: Route
   }
 
   type CourseList {
@@ -38,11 +45,27 @@ var schema = buildSchema(`
   }
 
   type Route {
-    geoJSON: Properties
+    geoJSON: GeoJSON
+  }
+
+  type GeoJSON {
+    properties: Properties
+    geometry: Geometry
+  }
+
+  type Geometry {
+    coordinates: [Coord]
+    milePoints: [[Coord]]
+  }
+
+  type Coord {
+    lat: Float
+    lng: Float
+    elev: Float
   }
 
   type Properties {
-    name: String!
+    name: String
     distance: Int!
     vert: Int!
     vertInfo: VertInfo
@@ -59,9 +82,9 @@ var schema = buildSchema(`
       goalHours: Int!
       goalMinutes: Int!
       calories: Int!
-      mileTimes: [Int]!
+      mileTimes: [Float]!
       distance: Int!
-      vert: Int!
+      vert: Int
       vertMod: Int!
       terrainMod: Float!
       startTime: String!

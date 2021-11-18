@@ -10,6 +10,9 @@ class RestAPI extends RESTDataSource {
         //just like Postman
         this.baseURL = "https://banana-crumble-42815.herokuapp.com/course"
     }
+    async getCourseNamesIds(token) {
+        const { data } = await this.get(`${this.baseURL}/courseList?token=${token}`)       
+    }
 
 
 }
@@ -18,21 +21,27 @@ class RestAPI extends RESTDataSource {
     //different GQL libraries are confusing
     //here im just writing my own methods to grab data from my routes
 
-const baseUrl =  "https://banana-crumble-42815.herokuapp.com/course/";
-const baseUrlDev = "http://localhost:3005/course/";
+// const baseUrl =  "https://banana-crumble-42815.herokuapp.com/course";
+const baseUrl = "http://localhost:3005/course";
 const CourseAPI = {
     getCourses: () => {
     },
 
     getCourseNamesIds: async (token) => { 
-        console.log(token, "course-api")
-        const response = await fetch(`${baseUrlDev}courseList?token=${token}`);
+        const response = await fetch(`${baseUrl}/courseList?token=${token}`);
+        const courseList = await response.json();
+        return courseList;
+    },
+    getMileTimesInfo: async (token, courseId) => {
+        const response = await fetch(`${baseUrl}/course?token=${token}&id=${courseId}`)
         const course = await response.json();
         return course;
     },
 
-    getRoute: () => {
-
+    getCourseInfo: async (token, courseId) => {
+        const response = await fetch(`${baseUrl}?token=${token}&id=${courseId}`)
+        const course = await response.json();
+        console.log(course.route.geoJSON)
     }
 }
 

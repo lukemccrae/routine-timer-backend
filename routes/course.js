@@ -98,8 +98,6 @@ router.post('/api/account/signin', (req, res, next) => {
     email
   } = body;
 
-  console.log(body)
-
   if (!email) {
     res.send({
       succes: false,
@@ -377,7 +375,6 @@ router.get('/course', (req, res, next) => {
       Course.find({
         _id: id
       }, (err, course) => {
-        console.log(course)
         
         res.send({
           success: true,
@@ -389,7 +386,6 @@ router.get('/course', (req, res, next) => {
   })
 })
 
-//why are there two of these???
 router.get('/', (req, res, next) => {
   const {
     query
@@ -398,8 +394,6 @@ router.get('/', (req, res, next) => {
     token, id
   } = query;
 
-  console.log(id)
-
   UserSession.find({
     _id: token,
     isDeleted: false
@@ -407,7 +401,6 @@ router.get('/', (req, res, next) => {
     Course.find({
       _id: id
     }, (err, course) => {
-      console.log(course, "course")
       res.send({
         success: true,
         message: 'Course found',
