@@ -1,6 +1,8 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
 const Course = require('./models/Course');
-const fetch = require("node-fetch")
+const fetch = require("node-fetch");
+const {deleteHelper} = require('./helpers/delete-course');
+
 
 class RestAPI extends RESTDataSource {
     constructor() {
@@ -37,12 +39,37 @@ const CourseAPI = {
         const course = await response.json();
         return course;
     },
+    getRouteInfo: async (token, courseId) => {
+        const response = await fetch(`${baseUrl}/course?token=${token}&id=${courseId}`)
+        const course = await response.json();
+        return course.course[0].route;
+    },
 
     getCourseInfo: async (token, courseId) => {
         const response = await fetch(`${baseUrl}?token=${token}&id=${courseId}`)
         const course = await response.json();
-        console.log(course.route.geoJSON)
+    },
+
+    getStopsInfo: async (token, courseId) => {
+        const response = await fetch(`${baseUrl}?token=${token}&id=${courseId}`)
+        const course = await response.json();
+        return course.course[0];
+    },
+    getCourseInfo: async (token, courseId) => {
+        const response = await fetch(`${baseUrl}?token=${token}&id=${courseId}`)
+        const course = await response.json();
+        return course.course[0].details;
+    },
+    deleteCourse: async (token, courseId) => {
+        console.log(token, courseId)
+        // const response = await deleteHelper(token, courseId);
+        const response = await fetch(`${baseUrl}?token=${token}&courseId=${courseId}`, {
+            method: "DELETE"
+        })
+        const courseList = await response.json();
+        return courseList;
     }
+
 }
 
 module.exports = CourseAPI;

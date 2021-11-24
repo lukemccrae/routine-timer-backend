@@ -1,5 +1,5 @@
 const { buildSchema } = require('graphql');
-console.log(buildSchema)
+console.log(buildSchema);
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
@@ -8,6 +8,13 @@ var schema = buildSchema(`
     courseNamesIds(token: String!): [CourseList]
     mileTimesInfo(token: String, courseId: String): [MileTimes]
     getCourseInfo(token: String, courseId: String): Course
+    routeInfo(token: String, courseId: String): Route
+    stopsInfo(token: String, courseId: String): Stops
+    courseInfo(token: String, courseId: String): CourseInfo
+  }
+
+  type Mutation {
+    deleteCourse(courseId: String!, token: String!): [CourseList]
   }
 
   type Course {
@@ -16,11 +23,20 @@ var schema = buildSchema(`
     details: Details
   }
 
+  type CourseInfo {
+    name: String!
+    goalHours: Int!
+    goalMinutes: Int!
+    calories: Int!
+    terrainMod: Float!
+    startTime: String!
+  }
+
   type MileTimes {
     _id: ID
     details: Details
-    hash: String
     route: Route
+    paceAdjust: [Float]
   }
 
   type CourseList {
@@ -37,7 +53,8 @@ var schema = buildSchema(`
     name: String!
     cals: Int!
     miles: Int!
-    id: Int!
+    id: String!
+    comments: String!
   }
 
   type User {

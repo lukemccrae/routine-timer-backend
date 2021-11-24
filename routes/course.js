@@ -303,7 +303,6 @@ router.post('/', (req, res, next) => {
       newCourse.hash = hash;
 
       newCourse.save((err, course) => {
-        console.log("saved course", course)
         if (err) {
           console.log(err);
         } else {
@@ -414,8 +413,6 @@ router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId, token} = query;
 
-  console.log(req.body, "hi")
-
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
       details: req.body.details,
@@ -433,7 +430,7 @@ router.patch('/', function(req, res) {
           const courseList = []
           courses.forEach(course => {
             courseList.push({
-              id: course._id,
+              _id: course._id,
               name: course.details.name,
               hash: course.hash,
             })
@@ -462,10 +459,6 @@ router.patch('/new', function(req, res) {
     type: "Feature"
   }
 
-  console.log(newRoute.geoJSON.properties.vertInfo)
-
-  console.log(newRoute)
-
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
       route: newRoute,
@@ -488,8 +481,7 @@ router.delete('/', function(req, res) {
     courseId,
     token
   } = query;
-
-  console.log(query)
+  console.log(courseId)
 
   UserSession.find({
     _id: token,
@@ -509,6 +501,7 @@ router.delete('/', function(req, res) {
         message: 'error: Invalid'
       })
     } else {
+      console.log(courseId, "courseId")
       Course.deleteOne({
         _id: courseId
       }, function(err) {
@@ -521,9 +514,11 @@ router.delete('/', function(req, res) {
             const courseList = []
             courses.forEach(course => {
               courseList.push({
-                id: course._id,
-                name: course.details.name,
+                _id: course._id,
                 hash: course.hash,
+                details: {
+                  name: course.details.name
+                }
               })
             });
 

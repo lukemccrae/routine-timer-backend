@@ -7,18 +7,13 @@ function mileTimesToArrayOfObjects(arr) {
     arr[i].map((m, j) => {
       m = {lat: m[0], lng: m[1], elev: m[2]}
       result[i].push(m)
-    })
-  }
+    });
+  };
   return result;
-}
+};
 
 const resolvers = {
     Query: {
-    },
-    
-
-    Mutation: {
-
     },
 
     Course: {
@@ -29,8 +24,14 @@ const resolvers = {
     },
     courseNamesIds: ({token}, __, dataSources) => {
         return CourseAPI.getCourseNamesIds(token).then((data)=> {
+          console.log(data, "get course list")
             return data.courses;
         })
+    },
+    deleteCourse: async ({token, courseId}) => {
+      const data = await CourseAPI.deleteCourse(token, courseId);
+      console.log(data, "data")
+      return data.courseList;
     },
 
     mileTimesInfo: ({token, courseId}, __, dataSources) => {
@@ -45,11 +46,29 @@ const resolvers = {
       })
     },
 
-    getCourseInfo: ({token, courseId}, __, dataSources) => {
+    routeInfo: ({token, courseId}, __, dataSources) => {
+      return CourseAPI.getRouteInfo(token, courseId).then((data) => {
+        let coords = data.geoJSON.geometry.coordinates
+        coords.map((c, i) => {
+          coords[i] = {lat: c[0], lng: c[1], elev: c[2]}
+        })
+        return data;
+      })
+    },
+
+    courseInfo: ({token, courseId}, __, dataSources) => {
       return CourseAPI.getCourseInfo(token, courseId).then((data) => {
         return data;
       })
+    },
+
+    stopsInfo: ({token, courseId}, __, dataSources) => {
+      return CourseAPI.getStopsInfo(token, courseId).then((data) => {
+        return data;
+      })
     }
+
+
 
   };
   
