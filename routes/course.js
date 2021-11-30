@@ -414,6 +414,7 @@ router.get('/', (req, res, next) => {
 router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId, token} = query;
+  console.log(query)
 
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {

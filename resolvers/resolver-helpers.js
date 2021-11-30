@@ -1,4 +1,5 @@
-export const mileTimesToArrayOfObjects = (arr) => {
+const helpers = {
+    mileTimesToArrayOfObjects: (arr) => {
     let result = [];
     for (let i = 0; i < arr.length; i++) {
       result.push([])
@@ -8,4 +9,7 @@ export const mileTimesToArrayOfObjects = (arr) => {
       });
     };
     return result;
-  };
+  }
+}
+
+module.exports = helpers;

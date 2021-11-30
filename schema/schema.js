@@ -16,6 +16,7 @@ var schema = buildSchema(`
   type Mutation {
     deleteCourse(courseId: String!, token: String!): [CourseList]
     addNewCourse(token: String!): Course
+    saveCourse(courseId: String!, token: String): String
   }
 
   type Course {

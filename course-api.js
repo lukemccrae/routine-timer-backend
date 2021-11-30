@@ -77,6 +77,13 @@ const CourseAPI = {
         const response = await request.json();
         return response;
         
+    },
+    saveCourse: async (token, courseId) => {
+        const request = await fetch(`${baseUrl}?token=${token}&courseId=${courseId}`, {
+            method: "PATCH"
+        })
+        const response = await request.json()
+        console.log(response);
     }
 
 }
