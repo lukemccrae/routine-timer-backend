@@ -68,6 +68,15 @@ const CourseAPI = {
         })
         const courseList = await response.json();
         return courseList;
+    },
+    addNewCourse: async (token) => {
+        console.log(token, "token course api")
+        const request = await fetch(`${baseUrl}?token=${token}`, {
+            method: "POST"
+        })
+        const response = await request.json();
+        return response;
+        
     }
 
 }

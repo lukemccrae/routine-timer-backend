@@ -1,6 +1,7 @@
 const CourseAPI = require("../course-api")
 
-function mileTimesToArrayOfObjects(arr) {
+//import this from helper
+const mileTimesToArrayOfObjects = (arr) => {
   let result = [];
   for (let i = 0; i < arr.length; i++) {
     result.push([])
@@ -24,14 +25,17 @@ const resolvers = {
     },
     courseNamesIds: ({token}, __, dataSources) => {
         return CourseAPI.getCourseNamesIds(token).then((data)=> {
-          console.log(data, "get course list")
             return data.courses;
         })
     },
     deleteCourse: async ({token, courseId}) => {
       const data = await CourseAPI.deleteCourse(token, courseId);
-      console.log(data, "data")
       return data.courseList;
+    },
+
+    addNewCourse: async({token}) => {
+      const data = await CourseAPI.addNewCourse(token);
+      return data.course;
     },
 
     mileTimesInfo: ({token, courseId}, __, dataSources) => {

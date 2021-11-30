@@ -280,27 +280,29 @@ router.get('/courseList', function(req, res, next) {
 
 router.post('/', (req, res, next) => {
   const {
-    body
+    query
   } = req;
   const {
-    token,
-    hash
-  } = body;
+    token
+  } = query;
+  // console.log(token, "token")
+  console.log(query, "query")
 
-  if (!hash) {
-    res.send({
-      succes: false,
-      message: 'Error: Course hash is required.'
-    })
-  } else {
+  // if (!hash) {
+  //   res.send({
+  //     succes: false,
+  //     message: 'Error: Course hash is required.'
+  //   })
+  // } else {
     UserSession.find({
       _id: token,
       isDeleted: false
     }, (err, sessions) => {
+      console.log(sessions, "sessions")
 
       const newCourse = new Course();
       newCourse.user = sessions[0].userId
-      newCourse.hash = hash;
+      newCourse.hash = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8);
 
       newCourse.save((err, course) => {
         if (err) {
@@ -320,8 +322,8 @@ router.post('/', (req, res, next) => {
             res.send({
               success: true,
               message: 'Course added',
-              course: courses[0],
-              courseList: courseList,
+              course: courses[0]
+              // courseList: courseList,
               // courses: courses
             })
           })
@@ -329,7 +331,7 @@ router.post('/', (req, res, next) => {
         }
       })
     })
-  }
+  // }
 })
 
 router.get('/hash/:hash', function(req, res, next) {
