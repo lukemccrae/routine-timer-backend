@@ -78,12 +78,19 @@ const CourseAPI = {
         return response;
         
     },
-    saveCourse: async (token, courseId) => {
+    saveCourse: async (token, courseId, tempCourse) => {
         const request = await fetch(`${baseUrl}?token=${token}&courseId=${courseId}`, {
-            method: "PATCH"
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+                'origin': 'https://corsa.run'
+              },
+            body: JSON.stringify({
+                tempCourse
+            })
         })
-        const response = await request.json()
-        console.log(response);
+        const response = await request.json();
+        return response;
     }
 
 }

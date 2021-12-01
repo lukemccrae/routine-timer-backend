@@ -25,10 +25,11 @@ const resolvers = {
       const data = await CourseAPI.addNewCourse(token);
       return data.course;
     },
-    saveCourse: async({token, courseId}) => {
-      console.log(courseId)
-      const data = await CourseAPI.saveCourse(token, courseId)
-      return data.result;
+    saveCourse: async({token, courseId, tempCourse}) => {
+      console.log(token, courseId, tempCourse)
+      const data = await CourseAPI.saveCourse(token, courseId, tempCourse)
+      return data.message;
+      // return data.result;
     },
 
     mileTimesInfo: ({token, courseId}, __, dataSources) => {

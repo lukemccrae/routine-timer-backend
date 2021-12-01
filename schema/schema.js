@@ -13,16 +13,41 @@ var schema = buildSchema(`
     courseInfo(token: String, courseId: String): CourseInfo
   }
 
-  type Mutation {
-    deleteCourse(courseId: String!, token: String!): [CourseList]
-    addNewCourse(token: String!): Course
-    saveCourse(courseId: String!, token: String): String
-  }
-
   type Course {
     stops: Stops
     route: Route
     details: Details
+  }
+
+  input InputStops {
+    name: String!
+    cals: Int!
+    miles: Int!
+    id: String!
+    comments: String!
+  }
+
+  input InputDetails {
+    name: String, 
+    calories: Int, 
+    goalHours: Int,
+    goalMinutes: Int, 
+    vertMod: Int,
+    terrainMod: Float,
+    mileTimes: [Float],
+    startTime: String,
+  }
+
+  input TempCourse {
+    details: InputDetails
+    paceAdjust: [Float],
+    stops: [InputStops]
+  }
+
+  type Mutation {
+    deleteCourse(courseId: String!, token: String!): [CourseList]
+    addNewCourse(token: String!): Course
+    saveCourse(courseId: String!, token: String!, tempCourse: TempCourse!): String
   }
 
   type CourseInfo {

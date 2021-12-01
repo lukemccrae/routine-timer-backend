@@ -414,14 +414,15 @@ router.get('/', (req, res, next) => {
 router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId, token} = query;
-  console.log(query)
+  console.log(req.body.tempCourse.stops)
 
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
-      details: req.body.details,
-      stops: req.body.stops,
-      paceAdjust: req.body.paceAdjust
+      details: req.body.tempCourse.details,
+      stops: req.body.tempCourse.stops,
+      paceAdjust: req.body.tempCourse.paceAdjust
     }}, (err, courses) => {
+      console.log(courses, "courses")
 
       UserSession.find({
         _id: token,
@@ -441,16 +442,13 @@ router.patch('/', function(req, res) {
           res.send({
             success: true,
             message: 'Course modified',
-            courseList: courseList 
-            // course: courses[0],
+            // courseList: courseList,
+            course: courses[0],
             // courses: courses
           })
         })
       })
-
-
-
-      })
+    })
   })
 
 router.patch('/new', function(req, res) {
@@ -468,6 +466,7 @@ router.patch('/new', function(req, res) {
       paceAdjust: new Array(newRoute.geoJSON.properties.vertInfo.cumulativeGain.length).fill(0)
 
     }}, (err, course) => {
+      console.log(course)
     res.send({
       success: true,
       message: 'GPX added to course',

@@ -25,7 +25,8 @@ const CourseSchema = new mongoose.Schema({
       name: "Start",
       cals: 400,
       miles: 0,
-      id: 1
+      id: 1,
+      comments: ""
     }]
   },
   user: {
