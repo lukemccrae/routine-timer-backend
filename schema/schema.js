@@ -28,14 +28,14 @@ var schema = buildSchema(`
   }
 
   input InputDetails {
-    name: String, 
-    calories: Int, 
-    goalHours: Int,
-    goalMinutes: Int, 
-    vertMod: Int,
-    terrainMod: Float,
-    mileTimes: [Float],
-    startTime: String,
+    name: String!,
+    calories: Int!, 
+    goalHours: Int!,
+    goalMinutes: Int!, 
+    vertMod: Int!,
+    terrainMod: Float!,
+    mileTimes: [Float]!,
+    startTime: String!,
   }
 
   input TempCourse {

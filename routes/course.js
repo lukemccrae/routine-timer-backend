@@ -414,7 +414,6 @@ router.get('/', (req, res, next) => {
 router.patch('/', function(req, res) {
   const {query} = req;
   const {courseId, token} = query;
-  console.log(req.body.tempCourse.stops)
 
   Course.findOneAndUpdate({_id: courseId}, {$set:
     {
@@ -422,8 +421,6 @@ router.patch('/', function(req, res) {
       stops: req.body.tempCourse.stops,
       paceAdjust: req.body.tempCourse.paceAdjust
     }}, (err, courses) => {
-      console.log(courses, "courses")
-
       UserSession.find({
         _id: token,
         isDeleted: false

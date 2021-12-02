@@ -26,10 +26,9 @@ const resolvers = {
       return data.course;
     },
     saveCourse: async({token, courseId, tempCourse}) => {
-      console.log(token, courseId, tempCourse)
+      console.log(token, courseId, tempCourse, "saveCourse(")
       const data = await CourseAPI.saveCourse(token, courseId, tempCourse)
       return data.message;
-      // return data.result;
     },
 
     mileTimesInfo: ({token, courseId}, __, dataSources) => {
@@ -61,12 +60,10 @@ const resolvers = {
 
     stopsInfo: ({token, courseId}, __, dataSources) => {
       return CourseAPI.getStopsInfo(token, courseId).then((data) => {
+        console.log(data, 'data')
         return data;
       })
     }
-
-
-
   };
   
   module.exports = resolvers;

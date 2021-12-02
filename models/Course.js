@@ -25,7 +25,7 @@ const CourseSchema = new mongoose.Schema({
       name: "Start",
       cals: 400,
       miles: 0,
-      id: 1,
+      id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8),
       comments: ""
     }]
   },
